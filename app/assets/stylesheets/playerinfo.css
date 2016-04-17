@@ -76,3 +76,59 @@ padding: 5px;
   background-image: url(/assets/oxygenplanet.png);
   background-size: contain;
 }
+
+.build-tab {
+  width: 731px;
+  position: relative;
+  left: 0 auto;
+  margin: 0 auto;
+  margin-top: 20px;
+  background-color: black;
+}
+
+.building-tab {
+  display: inline-block;
+  border: 1px solid white;
+  width: 180px;
+  text-align: center;
+  position: absolute;
+  height: 244px;
+  background-color: black;
+}
+
+#road {
+  left: 0px;
+}
+
+#base {
+  left: 180px;
+}
+
+#city{
+  left: 360px;
+}
+#devcard {
+  left: 540px;
+}
+
+
+.building-tab div{
+  margin: 3px;
+  float: left;
+}
+
+.building-tab h3{
+  margin: 0px;
+  margin-top: 3px;
+  font-size: 20px;
+  padding: 8px;
+  border-bottom: 1px solid white;
+  text-align: right;
+  height: 30px;
+}
+.build-tab  h2{
+  background-color: #0081b4;
+  margin: 0px;
+  padding: 5px;
+  font-size: 30px;
+}

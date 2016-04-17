@@ -5,6 +5,7 @@ var TileRow = require('./tile_row.jsx');
 var CurrentPlayer = require('../player/currentplayername.jsx');
 var EndTurn = require('../player/endturn.jsx');
 var ResourceTab = require('../player/resourcetab.jsx');
+var BuildingCards = require('../player/buildingcards.jsx');
 
 module.exports = React.createClass({
   render: function () {
@@ -26,6 +27,7 @@ module.exports = React.createClass({
           <TileRow tiles={[12,15]} rownum="tilerow4"/>
           <TileRow tiles={[16, 18]} rownum="tilerow5"/>
         </div>
+        <BuildingCards/>
       </div>
     );
   }
