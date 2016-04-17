@@ -6,6 +6,11 @@ var PlayerActions = {
       actionType: "NEW_PLAYERS",
       players: players
     });
+  },
+  rotatePlayers: function(){
+    AppDispatcher.dispatch({
+      actionType: "ROTATE"
+    });
   }
 };
 

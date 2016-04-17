@@ -1,0 +1,12 @@
+.current-player-name {
+  text-align: center;
+  font-size: 72;
+}
+
+
+.end-turn {
+  position: fixed;
+  bottom: 0px;
+  right: 20px;
+  width: 250px;
+}

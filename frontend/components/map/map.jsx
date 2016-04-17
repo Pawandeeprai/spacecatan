@@ -3,12 +3,14 @@ var VertexRow = require('./row.jsx');
 var TileRow = require('./tile_row.jsx');
 
 var CurrentPlayer = require('../player/currentplayername.jsx');
+var EndTurn = require('../player/endturn.jsx');
 
 module.exports = React.createClass({
   render: function () {
     return (
       <div>
         <CurrentPlayer/>
+        <EndTurn/>
         <div className="map">
           <VertexRow verticies={7} start="low" rownum="row1"/>
           <VertexRow verticies={9} start="low" rownum="row2"/>

@@ -6,11 +6,22 @@ module.exports = React.createClass({
   getInitialState: function(){
     return {currentPlayer: PlayerStore.currentPlayer() };
   },
+  componentDidMount: function(){
+    this.listener = PlayerStore.addListener(this._onChange);
 
+  },
+  _onChange: function(){
+    this.setState({
+      currentPlayer: PlayerStore.currentPlayer()
+    });
+  },
+  componentWillUnmount: function(){
+    this.listener.remove();
+  },
   render: function () {
     return (
-      <div >
-        <h1>{this.state.currentPlayer.name}</h1>
+      <div className="current-player-name">
+        <h1>{this.state.currentPlayer.name + "'s turn"}</h1>
       </div>
     );
   }

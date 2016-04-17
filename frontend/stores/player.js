@@ -21,6 +21,11 @@ var generatePlayer = function(name, color){
   players_.push(new Player(name,color));
 };
 
+var rotatePlayers = function(){
+  var last = players_.shift();
+  players_.push(last);
+};
+
 PlayerStore.all = function(){
   return players_;
 };
@@ -36,6 +41,11 @@ PlayerStore.__onDispatch = function(payload){
       payload.players.forEach(function(player){
         generatePlayer(player.name,player.color);
       });
+      PlayerStore.__emitChange();
+      break;
+    case "ROTATE":
+      rotatePlayers();
+      PlayerStore.__emitChange();
       break;
   }
 };

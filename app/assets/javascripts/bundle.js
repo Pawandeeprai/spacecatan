@@ -25193,6 +25193,7 @@
 	var TileRow = __webpack_require__(228);
 
 	var CurrentPlayer = __webpack_require__(260);
+	var EndTurn = __webpack_require__(261);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -25202,6 +25203,7 @@
 	      'div',
 	      null,
 	      React.createElement(CurrentPlayer, null),
+	      React.createElement(EndTurn, null),
 	      React.createElement(
 	        'div',
 	        { className: 'map' },
@@ -32545,6 +32547,11 @@
 	  players_.push(new Player(name, color));
 	};
 
+	var rotatePlayers = function () {
+	  var last = players_.shift();
+	  players_.push(last);
+	};
+
 	PlayerStore.all = function () {
 	  return players_;
 	};
@@ -32559,6 +32566,11 @@
 	      payload.players.forEach(function (player) {
 	        generatePlayer(player.name, player.color);
 	      });
+	      PlayerStore.__emitChange();
+	      break;
+	    case "ROTATE":
+	      rotatePlayers();
+	      PlayerStore.__emitChange();
 	      break;
 	  }
 	};
@@ -32576,6 +32588,11 @@
 	    AppDispatcher.dispatch({
 	      actionType: "NEW_PLAYERS",
 	      players: players
+	    });
+	  },
+	  rotatePlayers: function () {
+	    AppDispatcher.dispatch({
+	      actionType: "ROTATE"
 	    });
 	  }
 	};
@@ -32596,17 +32613,51 @@
 	  getInitialState: function () {
 	    return { currentPlayer: PlayerStore.currentPlayer() };
 	  },
-
+	  componentDidMount: function () {
+	    this.listener = PlayerStore.addListener(this._onChange);
+	  },
+	  _onChange: function () {
+	    this.setState({
+	      currentPlayer: PlayerStore.currentPlayer()
+	    });
+	  },
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      null,
+	      { className: 'current-player-name' },
 	      React.createElement(
 	        'h1',
 	        null,
-	        this.state.currentPlayer.name
+	        this.state.currentPlayer.name + "'s turn"
 	      )
 	    );
+	  }
+	});
+
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var PlayerActions = __webpack_require__(259);
+
+	module.exports = React.createClass({
+	  displayName: 'exports',
+
+	  rotatePlayers: function (e) {
+	    e.preventDefault();
+	    PlayerActions.rotatePlayers();
+	  },
+	  render: function () {
+	    return React.createElement('input', {
+	      type: 'submit',
+	      value: 'End Turn',
+	      onClick: this.rotatePlayers,
+	      className: 'button end-turn' });
 	  }
 	});
 
