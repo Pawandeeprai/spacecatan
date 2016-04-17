@@ -20,7 +20,7 @@ module.exports = React.createClass({
   },
   render: function () {
     return (
-      <div className="current-player-name">
+      <div className="current-player-name" id="current-player-name">
         <h1>{this.state.currentPlayer.name + "'s turn"}</h1>
       </div>
     );

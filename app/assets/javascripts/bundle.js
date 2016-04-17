@@ -25194,6 +25194,7 @@
 
 	var CurrentPlayer = __webpack_require__(260);
 	var EndTurn = __webpack_require__(261);
+	var ResourceTab = __webpack_require__(262);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -25204,6 +25205,7 @@
 	      null,
 	      React.createElement(CurrentPlayer, null),
 	      React.createElement(EndTurn, null),
+	      React.createElement(ResourceTab, null),
 	      React.createElement(
 	        'div',
 	        { className: 'map' },
@@ -32627,7 +32629,7 @@
 	  render: function () {
 	    return React.createElement(
 	      'div',
-	      { className: 'current-player-name' },
+	      { className: 'current-player-name', id: 'current-player-name' },
 	      React.createElement(
 	        'h1',
 	        null,
@@ -32658,6 +32660,81 @@
 	      value: 'End Turn',
 	      onClick: this.rotatePlayers,
 	      className: 'button end-turn' });
+	  }
+	});
+
+/***/ },
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var PlayerStore = __webpack_require__(258);
+
+	module.exports = React.createClass({
+	  displayName: 'exports',
+
+	  getInitialState: function () {
+	    return {
+	      resources: PlayerStore.currentPlayer().resources
+	    };
+	  },
+	  componentWillMount: function () {
+	    this.listener = PlayerStore.addListener(this._onChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	  _onChange: function () {
+	    this.setState({
+	      resources: PlayerStore.currentPlayer().resources
+	    });
+	  },
+	  render: function () {
+	    return React.createElement(
+	      'div',
+	      { className: 'resource-tab' },
+	      React.createElement(
+	        'h1',
+	        null,
+	        'Resources'
+	      ),
+	      React.createElement(
+	        'h3',
+	        null,
+	        React.createElement('div', { className: 'resource-color plasma' }),
+	        'Plasma: ',
+	        this.state.resources.wood
+	      ),
+	      React.createElement(
+	        'h3',
+	        null,
+	        React.createElement('div', { className: 'resource-color zero' }),
+	        'Element Zero: ',
+	        this.state.resources.brick
+	      ),
+	      React.createElement(
+	        'h3',
+	        null,
+	        React.createElement('div', { className: 'resource-color oxygen' }),
+	        'Oxygen: ',
+	        this.state.resources.sheep
+	      ),
+	      React.createElement(
+	        'h3',
+	        null,
+	        React.createElement('div', { className: 'resource-color hydrogen' }),
+	        'Hydrogen: ',
+	        this.state.resources.wheat
+	      ),
+	      React.createElement(
+	        'h3',
+	        null,
+	        React.createElement('div', { className: 'resource-color carbon' }),
+	        'Carbon: ',
+	        this.state.resources.stone
+	      )
+	    );
 	  }
 	});
 

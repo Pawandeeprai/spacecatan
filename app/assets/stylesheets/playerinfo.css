@@ -3,10 +3,76 @@
   font-size: 72;
 }
 
+#current-player-name {
+  font-size: 40px;
+}
+
 
 .end-turn {
   position: fixed;
   bottom: 0px;
   right: 20px;
   width: 250px;
+}
+
+.resource-tab {
+  border: 1px solid white;
+  width: 250px;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  background-color: black;
+}
+
+.resource-tab h3 {
+  font-size: 25px;
+  margin: 0px;
+  margin-bottom: 3px;
+  padding: 4px;
+  padding-left: 5px;
+  border-bottom: 1px solid white;
+  position: relative;
+  text-align: right;
+}
+
+.resource-tab h1 {
+text-align: center;
+background-color: #0081b4;
+margin: 0px;
+padding: 5px;
+}
+
+.resource-color {
+  width: 34px;
+  height: 34px;
+  display: inline-block;
+  float: left;
+  margin-left: -4px;
+  margin-top: -5px;
+
+}
+
+.hydrogen {
+  background-image: url(/assets/waterplanet.png);
+  background-size: contain;
+}
+
+.carbon {
+  background-image: url(/assets/foodplanet.png);
+  background-size: contain;
+}
+
+.plasma {
+  background-image: url(/assets/plasmaplanet.png);
+  background-size: contain;
+}
+
+.zero {
+  background-image: url(/assets/platplanet.png);
+  background-size: contain;
+}
+
+.oxygen {
+  background-image: url(/assets/oxygenplanet.png);
+  background-size: contain;
 }
