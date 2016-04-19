@@ -53,7 +53,7 @@
 	var IndexRoute = __webpack_require__(166).IndexRoute;
 
 	var App = __webpack_require__(223);
-	var MapActions = __webpack_require__(252);
+	var MapActions = __webpack_require__(258);
 
 	var TileStore = __webpack_require__(230);
 
@@ -25169,8 +25169,8 @@
 
 	var React = __webpack_require__(1);
 	var CatanMap = __webpack_require__(224);
-	var MapActions = __webpack_require__(252);
-	var PickPlayer = __webpack_require__(253);
+	var MapActions = __webpack_require__(258);
+	var PickPlayer = __webpack_require__(259);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -25192,10 +25192,10 @@
 	var VertexRow = __webpack_require__(225);
 	var TileRow = __webpack_require__(228);
 
-	var CurrentPlayer = __webpack_require__(260);
-	var EndTurn = __webpack_require__(261);
-	var ResourceTab = __webpack_require__(262);
-	var BuildingCards = __webpack_require__(263);
+	var CurrentPlayer = __webpack_require__(252);
+	var EndTurn = __webpack_require__(254);
+	var ResourceTab = __webpack_require__(256);
+	var BuildingCards = __webpack_require__(257);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32186,346 +32186,42 @@
 /* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AppDispatcher = __webpack_require__(249);
-
-	var MapActions = {
-	  generateNewMap: function () {
-	    AppDispatcher.dispatch({
-	      actionType: "NEW_MAP"
-	    });
-	  }
-	};
-
-	module.exports = MapActions;
-
-/***/ },
-/* 253 */
-/***/ function(module, exports, __webpack_require__) {
-
 	var React = __webpack_require__(1);
-	var LinkedStateMixin = __webpack_require__(254);
-	var Link = __webpack_require__(166).Link;
-	var History = __webpack_require__(166).History;
 
-	var MapActions = __webpack_require__(252);
-	var PlayerStore = __webpack_require__(258);
-	var PlayerActions = __webpack_require__(259);
+	var PlayerStore = __webpack_require__(253);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
 
-	  mixins: [LinkedStateMixin, History],
 	  getInitialState: function () {
-	    return {
-	      numberOfPlayers: 0,
-	      colors: ["red", "green", "blue", "yellow"]
-	    };
+	    return { currentPlayer: PlayerStore.currentPlayer() };
 	  },
-	  threePlayers: function (e) {
-	    e.preventDefault();
+	  componentDidMount: function () {
+	    this.listener = PlayerStore.addListener(this._onChange);
+	  },
+	  _onChange: function () {
 	    this.setState({
-	      numberOfPlayers: 3,
-	      player1: "red",
-	      player2: "green",
-	      player3: "blue"
+	      currentPlayer: PlayerStore.currentPlayer()
 	    });
 	  },
-	  fourPlayers: function (e) {
-	    e.preventDefault();
-	    this.setState({
-	      numberOfPlayers: 4,
-	      player1: "red",
-	      player2: "green",
-	      player3: "blue",
-	      player4: "yellow"
-	    });
-	  },
-	  createPlayers: function (e) {
-	    e.preventDefault();
-	    var players = [{ name: this.state.player1, color: "red" }, { name: this.state.player2, color: "green" }, { name: this.state.player3, color: "blue" }];
-	    if (this.state.player4) {
-	      players.push({ name: this.state.player4, color: "yellow" });
-	    }
-	    MapActions.generateNewMap();
-	    PlayerActions.generateNewPlayers(players);
-	    this.history.push("/map");
+	  componentWillUnmount: function () {
+	    this.listener.remove();
 	  },
 	  render: function () {
-	    if (this.state.numberOfPlayers) {
-	      var display = [React.createElement(
-	        'span',
-	        null,
-	        'Player Name:'
-	      )];
-	      for (var i = 0; i < this.state.numberOfPlayers; i++) {
-	        var playerNum = 'player' + (i + 1);
-	        display.push(React.createElement(
-	          'div',
-	          null,
-	          React.createElement('input', { type: 'text', valueLink: this.linkState(playerNum) }),
-	          this.state.colors[i]
-	        ));
-	      }
-	      display.push(React.createElement('input', { className: 'start button',
-	        id: 'start-button',
-	        type: 'submit',
-	        value: 'Start Game',
-	        onClick: this.createPlayers }));
-	    }
 	    return React.createElement(
 	      'div',
-	      { className: 'options' },
+	      { className: 'current-player-name', id: 'current-player-name' },
 	      React.createElement(
-	        'div',
-	        { className: 'choose-local-players' },
-	        React.createElement('input', { className: 'button',
-	          type: 'submit',
-	          value: '3 Players',
-	          onClick: this.threePlayers }),
-	        React.createElement('input', { className: 'button',
-	          type: 'submit',
-	          value: '4 Players',
-	          onClick: this.fourPlayers })
-	      ),
-	      React.createElement(
-	        'form',
-	        { className: 'playerinfo', onSubmit: this.createPlayers },
-	        display
+	        'h1',
+	        null,
+	        this.state.currentPlayer.name + "'s turn"
 	      )
 	    );
 	  }
 	});
 
 /***/ },
-/* 254 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__(255);
-
-/***/ },
-/* 255 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule LinkedStateMixin
-	 */
-
-	'use strict';
-
-	var ReactLink = __webpack_require__(256);
-	var ReactStateSetters = __webpack_require__(257);
-
-	/**
-	 * A simple mixin around ReactLink.forState().
-	 */
-	var LinkedStateMixin = {
-	  /**
-	   * Create a ReactLink that's linked to part of this component's state. The
-	   * ReactLink will have the current value of this.state[key] and will call
-	   * setState() when a change is requested.
-	   *
-	   * @param {string} key state key to update. Note: you may want to use keyOf()
-	   * if you're using Google Closure Compiler advanced mode.
-	   * @return {ReactLink} ReactLink instance linking to the state.
-	   */
-	  linkState: function (key) {
-	    return new ReactLink(this.state[key], ReactStateSetters.createStateKeySetter(this, key));
-	  }
-	};
-
-	module.exports = LinkedStateMixin;
-
-/***/ },
-/* 256 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactLink
-	 */
-
-	'use strict';
-
-	/**
-	 * ReactLink encapsulates a common pattern in which a component wants to modify
-	 * a prop received from its parent. ReactLink allows the parent to pass down a
-	 * value coupled with a callback that, when invoked, expresses an intent to
-	 * modify that value. For example:
-	 *
-	 * React.createClass({
-	 *   getInitialState: function() {
-	 *     return {value: ''};
-	 *   },
-	 *   render: function() {
-	 *     var valueLink = new ReactLink(this.state.value, this._handleValueChange);
-	 *     return <input valueLink={valueLink} />;
-	 *   },
-	 *   _handleValueChange: function(newValue) {
-	 *     this.setState({value: newValue});
-	 *   }
-	 * });
-	 *
-	 * We have provided some sugary mixins to make the creation and
-	 * consumption of ReactLink easier; see LinkedValueUtils and LinkedStateMixin.
-	 */
-
-	var React = __webpack_require__(2);
-
-	/**
-	 * @param {*} value current value of the link
-	 * @param {function} requestChange callback to request a change
-	 */
-	function ReactLink(value, requestChange) {
-	  this.value = value;
-	  this.requestChange = requestChange;
-	}
-
-	/**
-	 * Creates a PropType that enforces the ReactLink API and optionally checks the
-	 * type of the value being passed inside the link. Example:
-	 *
-	 * MyComponent.propTypes = {
-	 *   tabIndexLink: ReactLink.PropTypes.link(React.PropTypes.number)
-	 * }
-	 */
-	function createLinkTypeChecker(linkType) {
-	  var shapes = {
-	    value: linkType === undefined ? React.PropTypes.any.isRequired : linkType.isRequired,
-	    requestChange: React.PropTypes.func.isRequired
-	  };
-	  return React.PropTypes.shape(shapes);
-	}
-
-	ReactLink.PropTypes = {
-	  link: createLinkTypeChecker
-	};
-
-	module.exports = ReactLink;
-
-/***/ },
-/* 257 */
-/***/ function(module, exports) {
-
-	/**
-	 * Copyright 2013-present, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule ReactStateSetters
-	 */
-
-	'use strict';
-
-	var ReactStateSetters = {
-	  /**
-	   * Returns a function that calls the provided function, and uses the result
-	   * of that to set the component's state.
-	   *
-	   * @param {ReactCompositeComponent} component
-	   * @param {function} funcReturningState Returned callback uses this to
-	   *                                      determine how to update state.
-	   * @return {function} callback that when invoked uses funcReturningState to
-	   *                    determined the object literal to setState.
-	   */
-	  createStateSetter: function (component, funcReturningState) {
-	    return function (a, b, c, d, e, f) {
-	      var partialState = funcReturningState.call(component, a, b, c, d, e, f);
-	      if (partialState) {
-	        component.setState(partialState);
-	      }
-	    };
-	  },
-
-	  /**
-	   * Returns a single-argument callback that can be used to update a single
-	   * key in the component's state.
-	   *
-	   * Note: this is memoized function, which makes it inexpensive to call.
-	   *
-	   * @param {ReactCompositeComponent} component
-	   * @param {string} key The key in the state that you should update.
-	   * @return {function} callback of 1 argument which calls setState() with
-	   *                    the provided keyName and callback argument.
-	   */
-	  createStateKeySetter: function (component, key) {
-	    // Memoize the setters.
-	    var cache = component.__keySetters || (component.__keySetters = {});
-	    return cache[key] || (cache[key] = createStateKeySetter(component, key));
-	  }
-	};
-
-	function createStateKeySetter(component, key) {
-	  // Partial state is allocated outside of the function closure so it can be
-	  // reused with every call, avoiding memory allocation when this function
-	  // is called.
-	  var partialState = {};
-	  return function stateKeySetter(value) {
-	    partialState[key] = value;
-	    component.setState(partialState);
-	  };
-	}
-
-	ReactStateSetters.Mixin = {
-	  /**
-	   * Returns a function that calls the provided function, and uses the result
-	   * of that to set the component's state.
-	   *
-	   * For example, these statements are equivalent:
-	   *
-	   *   this.setState({x: 1});
-	   *   this.createStateSetter(function(xValue) {
-	   *     return {x: xValue};
-	   *   })(1);
-	   *
-	   * @param {function} funcReturningState Returned callback uses this to
-	   *                                      determine how to update state.
-	   * @return {function} callback that when invoked uses funcReturningState to
-	   *                    determined the object literal to setState.
-	   */
-	  createStateSetter: function (funcReturningState) {
-	    return ReactStateSetters.createStateSetter(this, funcReturningState);
-	  },
-
-	  /**
-	   * Returns a single-argument callback that can be used to update a single
-	   * key in the component's state.
-	   *
-	   * For example, these statements are equivalent:
-	   *
-	   *   this.setState({x: 1});
-	   *   this.createStateKeySetter('x')(1);
-	   *
-	   * Note: this is memoized function, which makes it inexpensive to call.
-	   *
-	   * @param {string} key The key in the state that you should update.
-	   * @return {function} callback of 1 argument which calls setState() with
-	   *                    the provided keyName and callback argument.
-	   */
-	  createStateKeySetter: function (key) {
-	    return ReactStateSetters.createStateKeySetter(this, key);
-	  }
-	};
-
-	module.exports = ReactStateSetters;
-
-/***/ },
-/* 258 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Store = __webpack_require__(231).Store;
@@ -32582,7 +32278,31 @@
 	module.exports = PlayerStore;
 
 /***/ },
-/* 259 */
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var PlayerActions = __webpack_require__(255);
+
+	module.exports = React.createClass({
+	  displayName: 'exports',
+
+	  rotatePlayers: function (e) {
+	    e.preventDefault();
+	    PlayerActions.rotatePlayers();
+	  },
+	  render: function () {
+	    return React.createElement('input', {
+	      type: 'submit',
+	      value: 'End Turn',
+	      onClick: this.rotatePlayers,
+	      className: 'button end-turn' });
+	  }
+	});
+
+/***/ },
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(249);
@@ -32604,74 +32324,12 @@
 	module.exports = PlayerActions;
 
 /***/ },
-/* 260 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 
-	var PlayerStore = __webpack_require__(258);
-
-	module.exports = React.createClass({
-	  displayName: 'exports',
-
-	  getInitialState: function () {
-	    return { currentPlayer: PlayerStore.currentPlayer() };
-	  },
-	  componentDidMount: function () {
-	    this.listener = PlayerStore.addListener(this._onChange);
-	  },
-	  _onChange: function () {
-	    this.setState({
-	      currentPlayer: PlayerStore.currentPlayer()
-	    });
-	  },
-	  componentWillUnmount: function () {
-	    this.listener.remove();
-	  },
-	  render: function () {
-	    return React.createElement(
-	      'div',
-	      { className: 'current-player-name', id: 'current-player-name' },
-	      React.createElement(
-	        'h1',
-	        null,
-	        this.state.currentPlayer.name + "'s turn"
-	      )
-	    );
-	  }
-	});
-
-/***/ },
-/* 261 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-
-	var PlayerActions = __webpack_require__(259);
-
-	module.exports = React.createClass({
-	  displayName: 'exports',
-
-	  rotatePlayers: function (e) {
-	    e.preventDefault();
-	    PlayerActions.rotatePlayers();
-	  },
-	  render: function () {
-	    return React.createElement('input', {
-	      type: 'submit',
-	      value: 'End Turn',
-	      onClick: this.rotatePlayers,
-	      className: 'button end-turn' });
-	  }
-	});
-
-/***/ },
-/* 262 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-
-	var PlayerStore = __webpack_require__(258);
+	var PlayerStore = __webpack_require__(253);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32741,7 +32399,7 @@
 	});
 
 /***/ },
-/* 263 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -32858,6 +32516,348 @@
 	    );
 	  }
 	});
+
+/***/ },
+/* 258 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(249);
+
+	var MapActions = {
+	  generateNewMap: function () {
+	    AppDispatcher.dispatch({
+	      actionType: "NEW_MAP"
+	    });
+	  }
+	};
+
+	module.exports = MapActions;
+
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var LinkedStateMixin = __webpack_require__(260);
+	var Link = __webpack_require__(166).Link;
+	var History = __webpack_require__(166).History;
+
+	var MapActions = __webpack_require__(258);
+	var PlayerStore = __webpack_require__(253);
+	var PlayerActions = __webpack_require__(255);
+
+	module.exports = React.createClass({
+	  displayName: 'exports',
+
+	  mixins: [LinkedStateMixin, History],
+	  getInitialState: function () {
+	    return {
+	      numberOfPlayers: 0,
+	      colors: ["red", "green", "blue", "yellow"]
+	    };
+	  },
+	  threePlayers: function (e) {
+	    e.preventDefault();
+	    this.setState({
+	      numberOfPlayers: 3,
+	      player1: "red",
+	      player2: "green",
+	      player3: "blue"
+	    });
+	  },
+	  fourPlayers: function (e) {
+	    e.preventDefault();
+	    this.setState({
+	      numberOfPlayers: 4,
+	      player1: "red",
+	      player2: "green",
+	      player3: "blue",
+	      player4: "yellow"
+	    });
+	  },
+	  createPlayers: function (e) {
+	    e.preventDefault();
+	    var players = [{ name: this.state.player1, color: "red" }, { name: this.state.player2, color: "green" }, { name: this.state.player3, color: "blue" }];
+	    if (this.state.player4) {
+	      players.push({ name: this.state.player4, color: "yellow" });
+	    }
+	    MapActions.generateNewMap();
+	    PlayerActions.generateNewPlayers(players);
+	    this.history.push("/map");
+	  },
+	  render: function () {
+	    if (this.state.numberOfPlayers) {
+	      var display = [React.createElement(
+	        'span',
+	        null,
+	        'Player Name:'
+	      )];
+	      for (var i = 0; i < this.state.numberOfPlayers; i++) {
+	        var playerNum = 'player' + (i + 1);
+	        display.push(React.createElement(
+	          'div',
+	          null,
+	          React.createElement('input', { type: 'text', valueLink: this.linkState(playerNum) }),
+	          this.state.colors[i]
+	        ));
+	      }
+	      display.push(React.createElement('input', { className: 'start button',
+	        id: 'start-button',
+	        type: 'submit',
+	        value: 'Start Game',
+	        onClick: this.createPlayers }));
+	    }
+	    return React.createElement(
+	      'div',
+	      { className: 'options' },
+	      React.createElement(
+	        'div',
+	        { className: 'choose-local-players' },
+	        React.createElement('input', { className: 'button',
+	          type: 'submit',
+	          value: '3 Players',
+	          onClick: this.threePlayers }),
+	        React.createElement('input', { className: 'button',
+	          type: 'submit',
+	          value: '4 Players',
+	          onClick: this.fourPlayers })
+	      ),
+	      React.createElement(
+	        'form',
+	        { className: 'playerinfo', onSubmit: this.createPlayers },
+	        display
+	      )
+	    );
+	  }
+	});
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__(261);
+
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule LinkedStateMixin
+	 */
+
+	'use strict';
+
+	var ReactLink = __webpack_require__(262);
+	var ReactStateSetters = __webpack_require__(263);
+
+	/**
+	 * A simple mixin around ReactLink.forState().
+	 */
+	var LinkedStateMixin = {
+	  /**
+	   * Create a ReactLink that's linked to part of this component's state. The
+	   * ReactLink will have the current value of this.state[key] and will call
+	   * setState() when a change is requested.
+	   *
+	   * @param {string} key state key to update. Note: you may want to use keyOf()
+	   * if you're using Google Closure Compiler advanced mode.
+	   * @return {ReactLink} ReactLink instance linking to the state.
+	   */
+	  linkState: function (key) {
+	    return new ReactLink(this.state[key], ReactStateSetters.createStateKeySetter(this, key));
+	  }
+	};
+
+	module.exports = LinkedStateMixin;
+
+/***/ },
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactLink
+	 */
+
+	'use strict';
+
+	/**
+	 * ReactLink encapsulates a common pattern in which a component wants to modify
+	 * a prop received from its parent. ReactLink allows the parent to pass down a
+	 * value coupled with a callback that, when invoked, expresses an intent to
+	 * modify that value. For example:
+	 *
+	 * React.createClass({
+	 *   getInitialState: function() {
+	 *     return {value: ''};
+	 *   },
+	 *   render: function() {
+	 *     var valueLink = new ReactLink(this.state.value, this._handleValueChange);
+	 *     return <input valueLink={valueLink} />;
+	 *   },
+	 *   _handleValueChange: function(newValue) {
+	 *     this.setState({value: newValue});
+	 *   }
+	 * });
+	 *
+	 * We have provided some sugary mixins to make the creation and
+	 * consumption of ReactLink easier; see LinkedValueUtils and LinkedStateMixin.
+	 */
+
+	var React = __webpack_require__(2);
+
+	/**
+	 * @param {*} value current value of the link
+	 * @param {function} requestChange callback to request a change
+	 */
+	function ReactLink(value, requestChange) {
+	  this.value = value;
+	  this.requestChange = requestChange;
+	}
+
+	/**
+	 * Creates a PropType that enforces the ReactLink API and optionally checks the
+	 * type of the value being passed inside the link. Example:
+	 *
+	 * MyComponent.propTypes = {
+	 *   tabIndexLink: ReactLink.PropTypes.link(React.PropTypes.number)
+	 * }
+	 */
+	function createLinkTypeChecker(linkType) {
+	  var shapes = {
+	    value: linkType === undefined ? React.PropTypes.any.isRequired : linkType.isRequired,
+	    requestChange: React.PropTypes.func.isRequired
+	  };
+	  return React.PropTypes.shape(shapes);
+	}
+
+	ReactLink.PropTypes = {
+	  link: createLinkTypeChecker
+	};
+
+	module.exports = ReactLink;
+
+/***/ },
+/* 263 */
+/***/ function(module, exports) {
+
+	/**
+	 * Copyright 2013-present, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule ReactStateSetters
+	 */
+
+	'use strict';
+
+	var ReactStateSetters = {
+	  /**
+	   * Returns a function that calls the provided function, and uses the result
+	   * of that to set the component's state.
+	   *
+	   * @param {ReactCompositeComponent} component
+	   * @param {function} funcReturningState Returned callback uses this to
+	   *                                      determine how to update state.
+	   * @return {function} callback that when invoked uses funcReturningState to
+	   *                    determined the object literal to setState.
+	   */
+	  createStateSetter: function (component, funcReturningState) {
+	    return function (a, b, c, d, e, f) {
+	      var partialState = funcReturningState.call(component, a, b, c, d, e, f);
+	      if (partialState) {
+	        component.setState(partialState);
+	      }
+	    };
+	  },
+
+	  /**
+	   * Returns a single-argument callback that can be used to update a single
+	   * key in the component's state.
+	   *
+	   * Note: this is memoized function, which makes it inexpensive to call.
+	   *
+	   * @param {ReactCompositeComponent} component
+	   * @param {string} key The key in the state that you should update.
+	   * @return {function} callback of 1 argument which calls setState() with
+	   *                    the provided keyName and callback argument.
+	   */
+	  createStateKeySetter: function (component, key) {
+	    // Memoize the setters.
+	    var cache = component.__keySetters || (component.__keySetters = {});
+	    return cache[key] || (cache[key] = createStateKeySetter(component, key));
+	  }
+	};
+
+	function createStateKeySetter(component, key) {
+	  // Partial state is allocated outside of the function closure so it can be
+	  // reused with every call, avoiding memory allocation when this function
+	  // is called.
+	  var partialState = {};
+	  return function stateKeySetter(value) {
+	    partialState[key] = value;
+	    component.setState(partialState);
+	  };
+	}
+
+	ReactStateSetters.Mixin = {
+	  /**
+	   * Returns a function that calls the provided function, and uses the result
+	   * of that to set the component's state.
+	   *
+	   * For example, these statements are equivalent:
+	   *
+	   *   this.setState({x: 1});
+	   *   this.createStateSetter(function(xValue) {
+	   *     return {x: xValue};
+	   *   })(1);
+	   *
+	   * @param {function} funcReturningState Returned callback uses this to
+	   *                                      determine how to update state.
+	   * @return {function} callback that when invoked uses funcReturningState to
+	   *                    determined the object literal to setState.
+	   */
+	  createStateSetter: function (funcReturningState) {
+	    return ReactStateSetters.createStateSetter(this, funcReturningState);
+	  },
+
+	  /**
+	   * Returns a single-argument callback that can be used to update a single
+	   * key in the component's state.
+	   *
+	   * For example, these statements are equivalent:
+	   *
+	   *   this.setState({x: 1});
+	   *   this.createStateKeySetter('x')(1);
+	   *
+	   * Note: this is memoized function, which makes it inexpensive to call.
+	   *
+	   * @param {string} key The key in the state that you should update.
+	   * @return {function} callback of 1 argument which calls setState() with
+	   *                    the provided keyName and callback argument.
+	   */
+	  createStateKeySetter: function (key) {
+	    return ReactStateSetters.createStateKeySetter(this, key);
+	  }
+	};
+
+	module.exports = ReactStateSetters;
 
 /***/ }
 /******/ ]);
