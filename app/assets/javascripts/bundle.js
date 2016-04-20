@@ -25210,12 +25210,12 @@
 	      React.createElement(
 	        'div',
 	        { className: 'map' },
-	        React.createElement(VertexRow, { verticies: 7, start: 'low', rownum: 'row1' }),
-	        React.createElement(VertexRow, { verticies: 9, start: 'low', rownum: 'row2' }),
-	        React.createElement(VertexRow, { verticies: 11, start: 'low', rownum: 'row3' }),
-	        React.createElement(VertexRow, { verticies: 11, start: 'high', rownum: 'row4' }),
-	        React.createElement(VertexRow, { verticies: 9, start: 'high', rownum: 'row5' }),
-	        React.createElement(VertexRow, { verticies: 7, start: 'high', rownum: 'row6' }),
+	        React.createElement(VertexRow, { vertices: 0, start: 'low', rownum: 'row1' }),
+	        React.createElement(VertexRow, { vertices: 1, start: 'low', rownum: 'row2' }),
+	        React.createElement(VertexRow, { vertices: 2, start: 'low', rownum: 'row3' }),
+	        React.createElement(VertexRow, { vertices: 3, start: 'high', rownum: 'row4' }),
+	        React.createElement(VertexRow, { vertices: 4, start: 'high', rownum: 'row5' }),
+	        React.createElement(VertexRow, { vertices: 5, start: 'high', rownum: 'row6' }),
 	        React.createElement(TileRow, { tiles: [0, 2], rownum: 'tilerow1' }),
 	        React.createElement(TileRow, { tiles: [3, 6], rownum: 'tilerow2' }),
 	        React.createElement(TileRow, { tiles: [7, 11], rownum: 'tilerow3' }),
@@ -25249,8 +25249,10 @@
 	    // we can have a vertex row store then it'll be easy to keep things in place
 	    var vertArray = [];
 	    var roadArray = [];
-	    for (var i = 0; i < this.props.verticies; i++) {
-	      vertArray.push(React.createElement(Vertex, { height: this.state.height, key: i }));
+	    var allVert = VertexStore.all();
+	    var rowNum = this.props.vertices;
+	    for (var i = 0; i < allVert[rowNum].length; i++) {
+	      vertArray.push(React.createElement(Vertex, { vertex: allVert[rowNum][i], height: this.state.height, key: i }));
 	      roadArray.push(React.createElement(Road, { height: this.state.height }));
 	      if (this.state.height === "low") {
 	        this.state.height = "high";
@@ -32910,7 +32912,11 @@
 	    grid.push(row);
 	  }
 	  console.log(grid);
-	  return grid;
+	  vertices_ = grid;
+	};
+
+	VertexStore.all = function () {
+	  return vertices_;
 	};
 
 	VertexStore.__onDispatch = function (payload) {

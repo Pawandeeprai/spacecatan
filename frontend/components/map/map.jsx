@@ -15,12 +15,12 @@ module.exports = React.createClass({
         <EndTurn/>
         <ResourceTab/>
         <div className="map">
-          <VertexRow verticies={7} start="low" rownum="row1"/>
-          <VertexRow verticies={9} start="low" rownum="row2"/>
-          <VertexRow verticies={11} start="low" rownum="row3"/>
-          <VertexRow verticies={11} start="high" rownum="row4"/>
-          <VertexRow verticies={9} start="high" rownum="row5"/>
-          <VertexRow verticies={7} start="high" rownum="row6"/>
+          <VertexRow vertices={0} start="low" rownum="row1"/>
+          <VertexRow vertices={1} start="low" rownum="row2"/>
+          <VertexRow vertices={2} start="low" rownum="row3"/>
+          <VertexRow vertices={3} start="high" rownum="row4"/>
+          <VertexRow vertices={4} start="high" rownum="row5"/>
+          <VertexRow vertices={5} start="high" rownum="row6"/>
           <TileRow tiles={[0,2]} rownum="tilerow1"/>
           <TileRow tiles={[3,6]} rownum="tilerow2"/>
           <TileRow tiles={[7,11]} rownum="tilerow3"/>

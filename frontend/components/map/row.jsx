@@ -14,8 +14,12 @@ module.exports = React.createClass({
     // we can have a vertex row store then it'll be easy to keep things in place
     var vertArray = [];
     var roadArray = [];
-    for(var i = 0; i < this.props.verticies; i++){
-      vertArray.push(<Vertex height={this.state.height} key={i}/>);
+    var allVert = VertexStore.all();
+    var rowNum = this.props.vertices;
+    for(var i = 0; i < allVert[rowNum].length; i++){
+      vertArray.push(
+        <Vertex vertex={allVert[rowNum][i]} height={this.state.height} key={i}/>
+      );
       roadArray.push(<Road height={this.state.height}/>);
       if (this.state.height === "low"){
         this.state.height = "high";

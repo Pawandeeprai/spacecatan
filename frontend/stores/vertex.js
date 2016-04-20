@@ -25,7 +25,11 @@ var generateVertices = function(){
     grid.push(row);
   }
   console.log(grid);
-  return grid;
+  vertices_ = grid;
+};
+
+VertexStore.all = function(){
+  return vertices_;
 };
 
 VertexStore.__onDispatch = function(payload){
