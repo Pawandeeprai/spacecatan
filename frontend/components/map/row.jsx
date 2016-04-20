@@ -2,6 +2,8 @@ var React = require('react');
 var Vertex = require('./vertex.jsx');
 var Road = require('./road.jsx');
 
+var VertexStore = require('../../stores/vertex.js');
+
 module.exports = React.createClass({
   getInitialState: function(){
     return({

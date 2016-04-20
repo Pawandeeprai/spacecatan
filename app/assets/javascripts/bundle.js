@@ -25235,6 +25235,8 @@
 	var Vertex = __webpack_require__(226);
 	var Road = __webpack_require__(227);
 
+	var VertexStore = __webpack_require__(265);
+
 	module.exports = React.createClass({
 	  displayName: 'exports',
 
@@ -32545,6 +32547,7 @@
 	var MapActions = __webpack_require__(258);
 	var PlayerStore = __webpack_require__(253);
 	var PlayerActions = __webpack_require__(255);
+	var VertexActions = __webpack_require__(264);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32581,7 +32584,8 @@
 	    if (this.state.player4) {
 	      players.push({ name: this.state.player4, color: "yellow" });
 	    }
-	    MapActions.generateNewMap();
+	    VertexActions.generateNewVertices();
+	    MapActions.generateNewMap(); //maybe this shouldn't automatically generate the tiles?
 	    PlayerActions.generateNewPlayers(players);
 	    this.history.push("/map");
 	  },
@@ -32858,6 +32862,68 @@
 	};
 
 	module.exports = ReactStateSetters;
+
+/***/ },
+/* 264 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(249);
+
+	var VertexActions = {
+	  generateNewVertices: function () {
+	    AppDispatcher.dispatch({
+	      actionType: "NEW_VERTICES"
+	    });
+	  }
+	};
+
+	module.exports = VertexActions;
+
+/***/ },
+/* 265 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(231).Store;
+	var AppDispatcher = __webpack_require__(249);
+
+	var VertexStore = new Store(AppDispatcher);
+
+	var vertices_ = [];
+
+	function Vertex(pos) {
+	  this.neibhors = [];
+	  this.canBuild = true;
+	  this.colorBuild = [];
+	  this.base = null; // will eventually be the color of the person who owns the base here
+	  this.city = false;
+	  this.pos = pos;
+	}
+
+	var generateVertices = function () {
+	  var rows = [7, 9, 11, 11, 9, 7];
+	  var grid = [];
+	  for (var i = 0; i < rows.length; i++) {
+	    var row = [];
+	    for (var j = 0; j < rows[i]; j++) {
+	      row.push(new Vertex([i, j])); //passing the position gives us constant look up to update the store
+	    }
+	    grid.push(row);
+	  }
+	  console.log(grid);
+	  return grid;
+	};
+
+	VertexStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "NEW_MAP":
+	      generateVertices();
+	      VertexStore.__emitChange();
+	      break;
+
+	  }
+	};
+
+	module.exports = VertexStore;
 
 /***/ }
 /******/ ]);
