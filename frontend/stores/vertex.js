@@ -24,7 +24,6 @@ var generateVertices = function(){
     }
     grid.push(row);
   }
-  console.log(grid);
   vertices_ = grid;
 };
 

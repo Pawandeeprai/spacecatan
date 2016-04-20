@@ -25236,6 +25236,7 @@
 	var Road = __webpack_require__(227);
 
 	var VertexStore = __webpack_require__(265);
+	var RoadStore = __webpack_require__(266);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32550,6 +32551,7 @@
 	var PlayerStore = __webpack_require__(253);
 	var PlayerActions = __webpack_require__(255);
 	var VertexActions = __webpack_require__(264);
+	var RoadActions = __webpack_require__(267);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32587,6 +32589,7 @@
 	      players.push({ name: this.state.player4, color: "yellow" });
 	    }
 	    VertexActions.generateNewVertices();
+	    RoadActions.generateNewRoads();
 	    MapActions.generateNewMap(); //maybe this shouldn't automatically generate the tiles?
 	    PlayerActions.generateNewPlayers(players);
 	    this.history.push("/map");
@@ -32911,7 +32914,6 @@
 	    }
 	    grid.push(row);
 	  }
-	  console.log(grid);
 	  vertices_ = grid;
 	};
 
@@ -32930,6 +32932,66 @@
 	};
 
 	module.exports = VertexStore;
+
+/***/ },
+/* 266 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(231).Store;
+	var AppDispatcher = __webpack_require__(249);
+
+	var RoadStore = new Store(AppDispatcher);
+
+	var roads_ = [];
+
+	function Road(pos) {
+	  this.connections = []; //will be vertexes
+	  this.neibhors = []; // will be roads
+	  this.pos = pos;
+	  this.canBuild = true;
+	  this.color = null; //will eventually be a player color (the one who owns the road)
+	}
+
+	var generateNewRoads = function () {
+	  var rows = [6, 4, 8, 5, 10, 6, 10, 5, 8, 4, 6];
+	  var grid = [];
+	  for (var i = 0; i < rows.length; i++) {
+	    var row = [];
+	    for (var j = 0; j < rows[i]; j++) {
+	      row.push(new Road([i, j]));
+	    }
+	    grid.push(row);
+	  }
+	  console.log(grid);
+	};
+
+	RoadStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "NEW_ROADS":
+	      generateNewRoads();
+	      RoadStore.__emitChange();
+	      break;
+
+	  }
+	};
+
+	module.exports = RoadStore;
+
+/***/ },
+/* 267 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(249);
+
+	var RoadActions = {
+	  generateNewRoads: function () {
+	    AppDispatcher.dispatch({
+	      actionType: "NEW_ROADS"
+	    });
+	  }
+	};
+
+	module.exports = RoadActions;
 
 /***/ }
 /******/ ]);

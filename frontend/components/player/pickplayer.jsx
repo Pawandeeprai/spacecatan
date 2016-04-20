@@ -7,6 +7,7 @@ var MapActions = require('../../actions/map.js');
 var PlayerStore = require('../../stores/player.js');
 var PlayerActions = require('../../actions/player.js');
 var VertexActions = require('../../actions/vertex.js');
+var RoadActions = require('../../actions/road.js');
 
 
 module.exports = React.createClass({
@@ -45,6 +46,7 @@ module.exports = React.createClass({
       players.push({name: this.state.player4, color: "yellow"});
     }
     VertexActions.generateNewVertices();
+    RoadActions.generateNewRoads();
     MapActions.generateNewMap(); //maybe this shouldn't automatically generate the tiles?
     PlayerActions.generateNewPlayers(players);
     this.history.push("/map");
