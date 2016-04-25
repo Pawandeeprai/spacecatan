@@ -16,18 +16,21 @@ module.exports = React.createClass({
     var vertArray = [];
     var roadArray = [];
     var allVert = VertexStore.all();
-    var rowNum = this.props.vertices;
-    for(var i = 0; i < allVert[rowNum].length; i++){
+    var allRoads = RoadStore.all();
+    var vertexRowNum = this.props.vertices;
+    var roadRowNum = this.props.roads;
+    for(var i = 0; i < allVert[vertexRowNum].length; i++){
       vertArray.push(
-        <Vertex vertex={allVert[rowNum][i]} height={this.state.height} key={i}/>
+        <Vertex vertex={allVert[vertexRowNum][i]} height={this.state.height} key={i}/>
       );
-      roadArray.push(<Road height={this.state.height}/>);
+      roadArray.push(<Road road={allRoads[roadRowNum][i]} height={this.state.height}/>);
       if (this.state.height === "low"){
         this.state.height = "high";
       } else {
         this.state.height = "low";
       }
     }
+    console.log(roadArray[0]);
     return [vertArray, roadArray.slice(0, -1)];
   },
   render: function () {

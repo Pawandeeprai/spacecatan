@@ -25,7 +25,12 @@ var generateNewRoads = function(){
     grid.push(row);
   }
   console.log(grid);
+  roads_ = grid;
 };
+
+RoadStore.all = function(){
+  return roads_;
+};  
 
 RoadStore.__onDispatch = function(payload){
   switch (payload.actionType) {

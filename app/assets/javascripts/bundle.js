@@ -53,9 +53,9 @@
 	var IndexRoute = __webpack_require__(166).IndexRoute;
 
 	var App = __webpack_require__(223);
-	var MapActions = __webpack_require__(258);
+	var MapActions = __webpack_require__(260);
 
-	var TileStore = __webpack_require__(230);
+	var TileStore = __webpack_require__(253);
 
 	var CatanMap = __webpack_require__(224);
 
@@ -25169,8 +25169,8 @@
 
 	var React = __webpack_require__(1);
 	var CatanMap = __webpack_require__(224);
-	var MapActions = __webpack_require__(258);
-	var PickPlayer = __webpack_require__(259);
+	var MapActions = __webpack_require__(260);
+	var PickPlayer = __webpack_require__(261);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -25190,12 +25190,12 @@
 
 	var React = __webpack_require__(1);
 	var VertexRow = __webpack_require__(225);
-	var TileRow = __webpack_require__(228);
+	var TileRow = __webpack_require__(251);
 
-	var CurrentPlayer = __webpack_require__(252);
-	var EndTurn = __webpack_require__(254);
-	var ResourceTab = __webpack_require__(256);
-	var BuildingCards = __webpack_require__(257);
+	var CurrentPlayer = __webpack_require__(254);
+	var EndTurn = __webpack_require__(256);
+	var ResourceTab = __webpack_require__(258);
+	var BuildingCards = __webpack_require__(259);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -25210,17 +25210,17 @@
 	      React.createElement(
 	        'div',
 	        { className: 'map' },
-	        React.createElement(VertexRow, { vertices: 0, start: 'low', rownum: 'row1' }),
-	        React.createElement(VertexRow, { vertices: 1, start: 'low', rownum: 'row2' }),
-	        React.createElement(VertexRow, { vertices: 2, start: 'low', rownum: 'row3' }),
-	        React.createElement(VertexRow, { vertices: 3, start: 'high', rownum: 'row4' }),
-	        React.createElement(VertexRow, { vertices: 4, start: 'high', rownum: 'row5' }),
-	        React.createElement(VertexRow, { vertices: 5, start: 'high', rownum: 'row6' }),
-	        React.createElement(TileRow, { tiles: [0, 2], rownum: 'tilerow1' }),
-	        React.createElement(TileRow, { tiles: [3, 6], rownum: 'tilerow2' }),
-	        React.createElement(TileRow, { tiles: [7, 11], rownum: 'tilerow3' }),
-	        React.createElement(TileRow, { tiles: [12, 15], rownum: 'tilerow4' }),
-	        React.createElement(TileRow, { tiles: [16, 18], rownum: 'tilerow5' })
+	        React.createElement(VertexRow, { vertices: 0, roads: 0, start: 'low', rownum: 'row1' }),
+	        React.createElement(VertexRow, { vertices: 1, roads: 2, start: 'low', rownum: 'row2' }),
+	        React.createElement(VertexRow, { vertices: 2, roads: 4, start: 'low', rownum: 'row3' }),
+	        React.createElement(VertexRow, { vertices: 3, roads: 6, start: 'high', rownum: 'row4' }),
+	        React.createElement(VertexRow, { vertices: 4, roads: 8, start: 'high', rownum: 'row5' }),
+	        React.createElement(VertexRow, { vertices: 5, roads: 10, start: 'high', rownum: 'row6' }),
+	        React.createElement(TileRow, { tiles: [0, 2], roads: 1, rownum: 'tilerow1' }),
+	        React.createElement(TileRow, { tiles: [3, 6], roads: 3, rownum: 'tilerow2' }),
+	        React.createElement(TileRow, { tiles: [7, 11], roads: 5, rownum: 'tilerow3' }),
+	        React.createElement(TileRow, { tiles: [12, 15], roads: 7, rownum: 'tilerow4' }),
+	        React.createElement(TileRow, { tiles: [16, 18], roads: 9, rownum: 'tilerow5' })
 	      ),
 	      React.createElement(BuildingCards, null)
 	    );
@@ -25235,8 +25235,8 @@
 	var Vertex = __webpack_require__(226);
 	var Road = __webpack_require__(227);
 
-	var VertexStore = __webpack_require__(265);
-	var RoadStore = __webpack_require__(266);
+	var VertexStore = __webpack_require__(228);
+	var RoadStore = __webpack_require__(250);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -25251,16 +25251,19 @@
 	    var vertArray = [];
 	    var roadArray = [];
 	    var allVert = VertexStore.all();
-	    var rowNum = this.props.vertices;
-	    for (var i = 0; i < allVert[rowNum].length; i++) {
-	      vertArray.push(React.createElement(Vertex, { vertex: allVert[rowNum][i], height: this.state.height, key: i }));
-	      roadArray.push(React.createElement(Road, { height: this.state.height }));
+	    var allRoads = RoadStore.all();
+	    var vertexRowNum = this.props.vertices;
+	    var roadRowNum = this.props.roads;
+	    for (var i = 0; i < allVert[vertexRowNum].length; i++) {
+	      vertArray.push(React.createElement(Vertex, { vertex: allVert[vertexRowNum][i], height: this.state.height, key: i }));
+	      roadArray.push(React.createElement(Road, { road: allRoads[roadRowNum][i], height: this.state.height }));
 	      if (this.state.height === "low") {
 	        this.state.height = "high";
 	      } else {
 	        this.state.height = "low";
 	      }
 	    }
+	    console.log(roadArray[0]);
 	    return [vertArray, roadArray.slice(0, -1)];
 	  },
 	  render: function () {
@@ -25315,119 +25318,53 @@
 /* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var React = __webpack_require__(1);
-	var Tile = __webpack_require__(229);
-	var Road = __webpack_require__(227);
+	var Store = __webpack_require__(229).Store;
+	var AppDispatcher = __webpack_require__(247);
 
-	var TileStore = __webpack_require__(230);
+	var VertexStore = new Store(AppDispatcher);
 
-	module.exports = React.createClass({
-	  displayName: 'exports',
+	var vertices_ = [];
 
-	  generateTiles: function () {
-	    // we can have a tiles per row store which keeps track of where all the tiles are (store it on the backend too)
-	    var tiles = [];
-	    var mapTiles = TileStore.all().slice(this.props.tiles[0], this.props.tiles[1] + 1);
-	    for (var i = 0; i < mapTiles.length; i++) {
-	      tiles.push(React.createElement(Road, null));
-	      tiles.push(React.createElement(Tile, { key: i, tile: mapTiles[i], tiletype: 'water' }));
-	    }
-	    tiles.push(React.createElement(Road, null));
-	    return tiles;
-	  },
-	  render: function () {
-	    var display = this.generateTiles();
-	    return React.createElement(
-	      'div',
-	      { className: this.props.rownum },
-	      display
-	    );
-	  }
-	});
-
-/***/ },
-/* 229 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-
-	module.exports = React.createClass({
-	  displayName: "exports",
-
-	  render: function () {
-	    if (this.props.tile.type === "sun") {
-	      return React.createElement(
-	        "div",
-	        { className: "tile", id: this.props.tile.type },
-	        React.createElement("img", { src: "http://clipartwiz.com/wp-content/uploads/2016/02/Sun-clipart-free-clip-art-images-2.png" })
-	      );
-	    }
-	    return React.createElement(
-	      "div",
-	      { className: "tile", id: this.props.tile.type },
-	      React.createElement(
-	        "div",
-	        null,
-	        this.props.tile.diceValue
-	      )
-	    );
-	  }
-	});
-
-/***/ },
-/* 230 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(231).Store;
-	var AppDispatcher = __webpack_require__(249);
-
-	var TileStore = new Store(AppDispatcher);
-
-	var _tiles = [];
-	// create a tile object
-	function Tile(type, diceValue) {
-	  //TODO add the vertex array for connections
-	  this.type = type;
-	  this.conections = [];
-	  this.diceValue = diceValue;
+	function Vertex(pos) {
+	  this.neibhors = [];
+	  this.canBuild = true;
+	  this.colorBuild = [];
+	  this.base = null; // will eventually be the color of the person who owns the base here
+	  this.city = false;
+	  this.pos = pos;
 	}
 
-	var generateNewMap = function () {
-	  var types = ["plasma", "plasma", "plasma", "plat", "plat", "plat", "plat", "oxy", "oxy", "oxy", "oxy", "water", "water", "water", "water", "food", "food", "food", "food"];
-	  var values = [6, 5, 9, 4, 3, 8, 10, 6, 5, null, 9, 12, 3, 2, 10, 11, 11, 4, 8];
-	  // 4 of each tile with a sun in the middle (except plasma gets 3)
-	  //  3 plasma (brick)
-	  //  plat (stone)
-	  //  Oxygen (wheat)
-	  //  water (wood)
-	  //  food? (wheat)
-	  var i = 0;
-	  while (types.length > 0) {
-	    var random = Math.floor(Math.random() * types.length);
-	    _tiles.push(new Tile(types[random], values[i]));
-	    types.splice(random, 1);
-	    i++;
+	var generateVertices = function () {
+	  var rows = [7, 9, 11, 11, 9, 7];
+	  var grid = [];
+	  for (var i = 0; i < rows.length; i++) {
+	    var row = [];
+	    for (var j = 0; j < rows[i]; j++) {
+	      row.push(new Vertex([i, j])); //passing the position gives us constant look up to update the store
+	    }
+	    grid.push(row);
 	  }
-	  _tiles[9] = new Tile("sun");
+	  vertices_ = grid;
 	};
 
-	TileStore.all = function () {
-	  return _tiles;
+	VertexStore.all = function () {
+	  return vertices_;
 	};
 
-	TileStore.__onDispatch = function (payload) {
+	VertexStore.__onDispatch = function (payload) {
 	  switch (payload.actionType) {
 	    case "NEW_MAP":
-	      generateNewMap();
-	      TileStore.__emitChange();
+	      generateVertices();
+	      VertexStore.__emitChange();
 	      break;
 
 	  }
 	};
-	module.exports = TileStore;
+
+	module.exports = VertexStore;
 
 /***/ },
-/* 231 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -25439,15 +25376,15 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Container = __webpack_require__(232);
-	module.exports.MapStore = __webpack_require__(236);
-	module.exports.Mixin = __webpack_require__(248);
-	module.exports.ReduceStore = __webpack_require__(237);
-	module.exports.Store = __webpack_require__(238);
+	module.exports.Container = __webpack_require__(230);
+	module.exports.MapStore = __webpack_require__(234);
+	module.exports.Mixin = __webpack_require__(246);
+	module.exports.ReduceStore = __webpack_require__(235);
+	module.exports.Store = __webpack_require__(236);
 
 
 /***/ },
-/* 232 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25469,10 +25406,10 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var FluxStoreGroup = __webpack_require__(233);
+	var FluxStoreGroup = __webpack_require__(231);
 
-	var invariant = __webpack_require__(234);
-	var shallowEqual = __webpack_require__(235);
+	var invariant = __webpack_require__(232);
+	var shallowEqual = __webpack_require__(233);
 
 	var DEFAULT_OPTIONS = {
 	  pure: true,
@@ -25630,7 +25567,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 233 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25649,7 +25586,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var invariant = __webpack_require__(234);
+	var invariant = __webpack_require__(232);
 
 	/**
 	 * FluxStoreGroup allows you to execute a callback on every dispatch after
@@ -25711,7 +25648,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 234 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25766,7 +25703,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 235 */
+/* 233 */
 /***/ function(module, exports) {
 
 	/**
@@ -25821,7 +25758,7 @@
 	module.exports = shallowEqual;
 
 /***/ },
-/* 236 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25842,10 +25779,10 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var FluxReduceStore = __webpack_require__(237);
-	var Immutable = __webpack_require__(247);
+	var FluxReduceStore = __webpack_require__(235);
+	var Immutable = __webpack_require__(245);
 
-	var invariant = __webpack_require__(234);
+	var invariant = __webpack_require__(232);
 
 	/**
 	 * This is a simple store. It allows caching key value pairs. An implementation
@@ -25971,7 +25908,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 237 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -25992,10 +25929,10 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var FluxStore = __webpack_require__(238);
+	var FluxStore = __webpack_require__(236);
 
-	var abstractMethod = __webpack_require__(246);
-	var invariant = __webpack_require__(234);
+	var abstractMethod = __webpack_require__(244);
+	var invariant = __webpack_require__(232);
 
 	var FluxReduceStore = (function (_FluxStore) {
 	  _inherits(FluxReduceStore, _FluxStore);
@@ -26078,7 +26015,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 238 */
+/* 236 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26097,11 +26034,11 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var _require = __webpack_require__(239);
+	var _require = __webpack_require__(237);
 
 	var EventEmitter = _require.EventEmitter;
 
-	var invariant = __webpack_require__(234);
+	var invariant = __webpack_require__(232);
 
 	/**
 	 * This class should be extended by the stores in your application, like so:
@@ -26261,7 +26198,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 239 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -26274,14 +26211,14 @@
 	 */
 
 	var fbemitter = {
-	  EventEmitter: __webpack_require__(240)
+	  EventEmitter: __webpack_require__(238)
 	};
 
 	module.exports = fbemitter;
 
 
 /***/ },
-/* 240 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26300,11 +26237,11 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var EmitterSubscription = __webpack_require__(241);
-	var EventSubscriptionVendor = __webpack_require__(243);
+	var EmitterSubscription = __webpack_require__(239);
+	var EventSubscriptionVendor = __webpack_require__(241);
 
-	var emptyFunction = __webpack_require__(245);
-	var invariant = __webpack_require__(244);
+	var emptyFunction = __webpack_require__(243);
+	var invariant = __webpack_require__(242);
 
 	/**
 	 * @class BaseEventEmitter
@@ -26478,7 +26415,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 241 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -26499,7 +26436,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var EventSubscription = __webpack_require__(242);
+	var EventSubscription = __webpack_require__(240);
 
 	/**
 	 * EmitterSubscription represents a subscription with listener and context data.
@@ -26531,7 +26468,7 @@
 	module.exports = EmitterSubscription;
 
 /***/ },
-/* 242 */
+/* 240 */
 /***/ function(module, exports) {
 
 	/**
@@ -26585,7 +26522,7 @@
 	module.exports = EventSubscription;
 
 /***/ },
-/* 243 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26604,7 +26541,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var invariant = __webpack_require__(244);
+	var invariant = __webpack_require__(242);
 
 	/**
 	 * EventSubscriptionVendor stores a set of EventSubscriptions that are
@@ -26694,7 +26631,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 244 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26749,7 +26686,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 245 */
+/* 243 */
 /***/ function(module, exports) {
 
 	/**
@@ -26791,7 +26728,7 @@
 	module.exports = emptyFunction;
 
 /***/ },
-/* 246 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -26808,7 +26745,7 @@
 
 	'use strict';
 
-	var invariant = __webpack_require__(234);
+	var invariant = __webpack_require__(232);
 
 	function abstractMethod(className, methodName) {
 	   true ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Subclasses of %s must override %s() with their own implementation.', className, methodName) : invariant(false) : undefined;
@@ -26818,7 +26755,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 247 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31805,7 +31742,7 @@
 	}));
 
 /***/ },
-/* 248 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -31822,9 +31759,9 @@
 
 	'use strict';
 
-	var FluxStoreGroup = __webpack_require__(233);
+	var FluxStoreGroup = __webpack_require__(231);
 
-	var invariant = __webpack_require__(234);
+	var invariant = __webpack_require__(232);
 
 	/**
 	 * `FluxContainer` should be preferred over this mixin, but it requires using
@@ -31928,14 +31865,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 249 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Dispatcher = __webpack_require__(250).Dispatcher;
+	var Dispatcher = __webpack_require__(248).Dispatcher;
 	module.exports = new Dispatcher();
 
 /***/ },
-/* 250 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -31947,11 +31884,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(251);
+	module.exports.Dispatcher = __webpack_require__(249);
 
 
 /***/ },
-/* 251 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -31973,7 +31910,7 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-	var invariant = __webpack_require__(234);
+	var invariant = __webpack_require__(232);
 
 	var _prefix = 'ID_';
 
@@ -32188,12 +32125,176 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
+/* 250 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(229).Store;
+	var AppDispatcher = __webpack_require__(247);
+
+	var RoadStore = new Store(AppDispatcher);
+
+	var roads_ = [];
+
+	function Road(pos) {
+	  this.connections = []; //will be vertexes
+	  this.neibhors = []; // will be roads
+	  this.pos = pos;
+	  this.canBuild = true;
+	  this.color = null; //will eventually be a player color (the one who owns the road)
+	}
+
+	var generateNewRoads = function () {
+	  var rows = [6, 4, 8, 5, 10, 6, 10, 5, 8, 4, 6];
+	  var grid = [];
+	  for (var i = 0; i < rows.length; i++) {
+	    var row = [];
+	    for (var j = 0; j < rows[i]; j++) {
+	      row.push(new Road([i, j]));
+	    }
+	    grid.push(row);
+	  }
+	  console.log(grid);
+	  roads_ = grid;
+	};
+
+	RoadStore.all = function () {
+	  return roads_;
+	};
+
+	RoadStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "NEW_ROADS":
+	      generateNewRoads();
+	      RoadStore.__emitChange();
+	      break;
+
+	  }
+	};
+
+	module.exports = RoadStore;
+
+/***/ },
+/* 251 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+	var Tile = __webpack_require__(252);
+	var Road = __webpack_require__(227);
+
+	var TileStore = __webpack_require__(253);
+
+	module.exports = React.createClass({
+	  displayName: 'exports',
+
+	  generateTiles: function () {
+	    // we can have a tiles per row store which keeps track of where all the tiles are (store it on the backend too)
+	    var tiles = [];
+	    var mapTiles = TileStore.all().slice(this.props.tiles[0], this.props.tiles[1] + 1);
+	    for (var i = 0; i < mapTiles.length; i++) {
+	      tiles.push(React.createElement(Road, null));
+	      tiles.push(React.createElement(Tile, { key: i, tile: mapTiles[i], tiletype: 'water' }));
+	    }
+	    tiles.push(React.createElement(Road, null));
+	    return tiles;
+	  },
+	  render: function () {
+	    var display = this.generateTiles();
+	    return React.createElement(
+	      'div',
+	      { className: this.props.rownum },
+	      display
+	    );
+	  }
+	});
+
+/***/ },
 /* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 
-	var PlayerStore = __webpack_require__(253);
+	module.exports = React.createClass({
+	  displayName: "exports",
+
+	  render: function () {
+	    if (this.props.tile.type === "sun") {
+	      return React.createElement(
+	        "div",
+	        { className: "tile", id: this.props.tile.type },
+	        React.createElement("img", { src: "http://clipartwiz.com/wp-content/uploads/2016/02/Sun-clipart-free-clip-art-images-2.png" })
+	      );
+	    }
+	    return React.createElement(
+	      "div",
+	      { className: "tile", id: this.props.tile.type },
+	      React.createElement(
+	        "div",
+	        null,
+	        this.props.tile.diceValue
+	      )
+	    );
+	  }
+	});
+
+/***/ },
+/* 253 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Store = __webpack_require__(229).Store;
+	var AppDispatcher = __webpack_require__(247);
+
+	var TileStore = new Store(AppDispatcher);
+
+	var _tiles = [];
+	// create a tile object
+	function Tile(type, diceValue) {
+	  //TODO add the vertex array for connections
+	  this.type = type;
+	  this.conections = [];
+	  this.diceValue = diceValue;
+	}
+
+	var generateNewMap = function () {
+	  var types = ["plasma", "plasma", "plasma", "plat", "plat", "plat", "plat", "oxy", "oxy", "oxy", "oxy", "water", "water", "water", "water", "food", "food", "food", "food"];
+	  var values = [6, 5, 9, 4, 3, 8, 10, 6, 5, null, 9, 12, 3, 2, 10, 11, 11, 4, 8];
+	  // 4 of each tile with a sun in the middle (except plasma gets 3)
+	  //  3 plasma (brick)
+	  //  plat (stone)
+	  //  Oxygen (wheat)
+	  //  water (wood)
+	  //  food? (wheat)
+	  var i = 0;
+	  while (types.length > 0) {
+	    var random = Math.floor(Math.random() * types.length);
+	    _tiles.push(new Tile(types[random], values[i]));
+	    types.splice(random, 1);
+	    i++;
+	  }
+	  _tiles[9] = new Tile("sun");
+	};
+
+	TileStore.all = function () {
+	  return _tiles;
+	};
+
+	TileStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case "NEW_MAP":
+	      generateNewMap();
+	      TileStore.__emitChange();
+	      break;
+
+	  }
+	};
+	module.exports = TileStore;
+
+/***/ },
+/* 254 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var PlayerStore = __webpack_require__(255);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32226,11 +32327,11 @@
 	});
 
 /***/ },
-/* 253 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Store = __webpack_require__(231).Store;
-	var AppDispatcher = __webpack_require__(249);
+	var Store = __webpack_require__(229).Store;
+	var AppDispatcher = __webpack_require__(247);
 
 	var PlayerStore = new Store(AppDispatcher);
 
@@ -32283,12 +32384,12 @@
 	module.exports = PlayerStore;
 
 /***/ },
-/* 254 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 
-	var PlayerActions = __webpack_require__(255);
+	var PlayerActions = __webpack_require__(257);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32307,10 +32408,10 @@
 	});
 
 /***/ },
-/* 255 */
+/* 257 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AppDispatcher = __webpack_require__(249);
+	var AppDispatcher = __webpack_require__(247);
 
 	var PlayerActions = {
 	  generateNewPlayers: function (players) {
@@ -32329,12 +32430,12 @@
 	module.exports = PlayerActions;
 
 /***/ },
-/* 256 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
 
-	var PlayerStore = __webpack_require__(253);
+	var PlayerStore = __webpack_require__(255);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32404,7 +32505,7 @@
 	});
 
 /***/ },
-/* 257 */
+/* 259 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -32523,10 +32624,10 @@
 	});
 
 /***/ },
-/* 258 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AppDispatcher = __webpack_require__(249);
+	var AppDispatcher = __webpack_require__(247);
 
 	var MapActions = {
 	  generateNewMap: function () {
@@ -32539,18 +32640,18 @@
 	module.exports = MapActions;
 
 /***/ },
-/* 259 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LinkedStateMixin = __webpack_require__(260);
+	var LinkedStateMixin = __webpack_require__(262);
 	var Link = __webpack_require__(166).Link;
 	var History = __webpack_require__(166).History;
 
-	var MapActions = __webpack_require__(258);
-	var PlayerStore = __webpack_require__(253);
-	var PlayerActions = __webpack_require__(255);
-	var VertexActions = __webpack_require__(264);
+	var MapActions = __webpack_require__(260);
+	var PlayerStore = __webpack_require__(255);
+	var PlayerActions = __webpack_require__(257);
+	var VertexActions = __webpack_require__(266);
 	var RoadActions = __webpack_require__(267);
 
 	module.exports = React.createClass({
@@ -32641,13 +32742,13 @@
 	});
 
 /***/ },
-/* 260 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(261);
+	module.exports = __webpack_require__(263);
 
 /***/ },
-/* 261 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32663,8 +32764,8 @@
 
 	'use strict';
 
-	var ReactLink = __webpack_require__(262);
-	var ReactStateSetters = __webpack_require__(263);
+	var ReactLink = __webpack_require__(264);
+	var ReactStateSetters = __webpack_require__(265);
 
 	/**
 	 * A simple mixin around ReactLink.forState().
@@ -32687,7 +32788,7 @@
 	module.exports = LinkedStateMixin;
 
 /***/ },
-/* 262 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32760,7 +32861,7 @@
 	module.exports = ReactLink;
 
 /***/ },
-/* 263 */
+/* 265 */
 /***/ function(module, exports) {
 
 	/**
@@ -32869,10 +32970,10 @@
 	module.exports = ReactStateSetters;
 
 /***/ },
-/* 264 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AppDispatcher = __webpack_require__(249);
+	var AppDispatcher = __webpack_require__(247);
 
 	var VertexActions = {
 	  generateNewVertices: function () {
@@ -32885,103 +32986,10 @@
 	module.exports = VertexActions;
 
 /***/ },
-/* 265 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(231).Store;
-	var AppDispatcher = __webpack_require__(249);
-
-	var VertexStore = new Store(AppDispatcher);
-
-	var vertices_ = [];
-
-	function Vertex(pos) {
-	  this.neibhors = [];
-	  this.canBuild = true;
-	  this.colorBuild = [];
-	  this.base = null; // will eventually be the color of the person who owns the base here
-	  this.city = false;
-	  this.pos = pos;
-	}
-
-	var generateVertices = function () {
-	  var rows = [7, 9, 11, 11, 9, 7];
-	  var grid = [];
-	  for (var i = 0; i < rows.length; i++) {
-	    var row = [];
-	    for (var j = 0; j < rows[i]; j++) {
-	      row.push(new Vertex([i, j])); //passing the position gives us constant look up to update the store
-	    }
-	    grid.push(row);
-	  }
-	  vertices_ = grid;
-	};
-
-	VertexStore.all = function () {
-	  return vertices_;
-	};
-
-	VertexStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case "NEW_MAP":
-	      generateVertices();
-	      VertexStore.__emitChange();
-	      break;
-
-	  }
-	};
-
-	module.exports = VertexStore;
-
-/***/ },
-/* 266 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Store = __webpack_require__(231).Store;
-	var AppDispatcher = __webpack_require__(249);
-
-	var RoadStore = new Store(AppDispatcher);
-
-	var roads_ = [];
-
-	function Road(pos) {
-	  this.connections = []; //will be vertexes
-	  this.neibhors = []; // will be roads
-	  this.pos = pos;
-	  this.canBuild = true;
-	  this.color = null; //will eventually be a player color (the one who owns the road)
-	}
-
-	var generateNewRoads = function () {
-	  var rows = [6, 4, 8, 5, 10, 6, 10, 5, 8, 4, 6];
-	  var grid = [];
-	  for (var i = 0; i < rows.length; i++) {
-	    var row = [];
-	    for (var j = 0; j < rows[i]; j++) {
-	      row.push(new Road([i, j]));
-	    }
-	    grid.push(row);
-	  }
-	  console.log(grid);
-	};
-
-	RoadStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case "NEW_ROADS":
-	      generateNewRoads();
-	      RoadStore.__emitChange();
-	      break;
-
-	  }
-	};
-
-	module.exports = RoadStore;
-
-/***/ },
 /* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var AppDispatcher = __webpack_require__(249);
+	var AppDispatcher = __webpack_require__(247);
 
 	var RoadActions = {
 	  generateNewRoads: function () {
