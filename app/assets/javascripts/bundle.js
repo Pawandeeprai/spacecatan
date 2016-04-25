@@ -25304,6 +25304,7 @@
 	  displayName: "exports",
 
 	  render: function () {
+	    console.log(this.props);
 	    if (this.props.height === "low") {
 	      return React.createElement("div", { className: "road low" });
 	    } else if (this.props.height === "high") {
@@ -32182,6 +32183,7 @@
 	var Road = __webpack_require__(227);
 
 	var TileStore = __webpack_require__(253);
+	var RoadStore = __webpack_require__(250);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32189,12 +32191,14 @@
 	  generateTiles: function () {
 	    // we can have a tiles per row store which keeps track of where all the tiles are (store it on the backend too)
 	    var tiles = [];
+	    var allRoads = RoadStore.all();
+	    var roadsRowNum = this.props.roads;
 	    var mapTiles = TileStore.all().slice(this.props.tiles[0], this.props.tiles[1] + 1);
 	    for (var i = 0; i < mapTiles.length; i++) {
-	      tiles.push(React.createElement(Road, null));
+	      tiles.push(React.createElement(Road, { road: allRoads[roadsRowNum][i] }));
 	      tiles.push(React.createElement(Tile, { key: i, tile: mapTiles[i], tiletype: 'water' }));
 	    }
-	    tiles.push(React.createElement(Road, null));
+	    tiles.push(React.createElement(Road, { road: allRoads[roadsRowNum][allRoads[roadsRowNum].length - 1] }));
 	    return tiles;
 	  },
 	  render: function () {

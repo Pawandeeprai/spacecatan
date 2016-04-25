@@ -2,6 +2,7 @@ var React = require('react');
 
 module.exports = React.createClass({
   render: function () {
+    console.log(this.props);
     if (this.props.height === "low") {
       return <div className="road low"></div>;
     } else if (this.props.height === "high") {
