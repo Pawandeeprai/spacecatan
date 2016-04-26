@@ -1,6 +1,5 @@
-== TotallyNotCatan
-
-TNC is a collaborative game project that is currently in progress.  The end design will be an **original** game involving Settlers collecting resources, and building roads and towns.
+== Space Catan
+Space Catan is local/multiplayer Catan game for up to 4 players.
 
 The following features will be implemented:
 
