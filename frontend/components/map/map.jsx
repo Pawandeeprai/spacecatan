@@ -3,7 +3,7 @@ var VertexRow = require('./row.jsx');
 var TileRow = require('./tile_row.jsx');
 
 var CurrentPlayer = require('../player/currentplayername.jsx');
-var EndTurn = require('../player/endturn.jsx');
+var GameButtons = require('../player/buttons.jsx');
 var ResourceTab = require('../player/resourcetab.jsx');
 var BuildingCards = require('../player/buildingcards.jsx');
 
@@ -12,7 +12,7 @@ module.exports = React.createClass({
     return (
       <div>
         <CurrentPlayer/>
-        <EndTurn/>
+        <GameButtons/>
         <ResourceTab/>
         <div className="map">
           <VertexRow vertices={0} roads={0} start="low" rownum="row1"/>

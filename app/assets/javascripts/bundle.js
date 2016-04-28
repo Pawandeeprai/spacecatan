@@ -25193,7 +25193,7 @@
 	var TileRow = __webpack_require__(251);
 
 	var CurrentPlayer = __webpack_require__(254);
-	var EndTurn = __webpack_require__(256);
+	var GameButtons = __webpack_require__(256);
 	var ResourceTab = __webpack_require__(258);
 	var BuildingCards = __webpack_require__(259);
 
@@ -25205,7 +25205,7 @@
 	      'div',
 	      null,
 	      React.createElement(CurrentPlayer, null),
-	      React.createElement(EndTurn, null),
+	      React.createElement(GameButtons, null),
 	      React.createElement(ResourceTab, null),
 	      React.createElement(
 	        'div',
@@ -32398,16 +32398,40 @@
 	module.exports = React.createClass({
 	  displayName: 'exports',
 
+	  getInitialState: function () {
+	    return {
+	      rolled: false
+	    };
+	  },
 	  rotatePlayers: function (e) {
 	    e.preventDefault();
 	    PlayerActions.rotatePlayers();
 	  },
 	  render: function () {
-	    return React.createElement('input', {
-	      type: 'submit',
-	      value: 'End Turn',
-	      onClick: this.rotatePlayers,
-	      className: 'button end-turn' });
+	    return React.createElement(
+	      'div',
+	      { className: 'end-turn' },
+	      React.createElement('input', {
+	        type: 'submit',
+	        value: 'Roll',
+	        onClick: this.rotatePlayers,
+	        className: 'button' }),
+	      React.createElement('input', {
+	        type: 'submit',
+	        value: 'Build Road',
+	        onClick: this.rotatePlayers,
+	        className: 'button' }),
+	      React.createElement('input', {
+	        type: 'submit',
+	        value: 'Build Base',
+	        onClick: this.rotatePlayers,
+	        className: 'button' }),
+	      React.createElement('input', {
+	        type: 'submit',
+	        value: 'End Turn',
+	        onClick: this.rotatePlayers,
+	        className: 'button' })
+	    );
 	  }
 	});
 
@@ -32461,6 +32485,7 @@
 	    });
 	  },
 	  render: function () {
+
 	    return React.createElement(
 	      'div',
 	      { className: 'resource-tab' },
@@ -32518,6 +32543,7 @@
 	  displayName: "exports",
 
 	  render: function () {
+
 	    return React.createElement(
 	      "div",
 	      { className: "build-tab" },
@@ -32602,7 +32628,12 @@
 	        React.createElement(
 	          "h2",
 	          null,
-	          "Card"
+	          "Card ",
+	          React.createElement(
+	            "span",
+	            { className: "close-tab" },
+	            "X"
+	          )
 	        ),
 	        React.createElement(
 	          "h3",

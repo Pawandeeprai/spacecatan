@@ -14,7 +14,11 @@
   position: fixed;
   bottom: 0px;
   right: 20px;
-  width: 250px;
+}
+.end-turn input {
+  display: block;
+  width: 200px;
+  margin: 5px;
 }
 
 .resource-tab {
