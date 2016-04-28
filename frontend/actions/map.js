@@ -5,6 +5,11 @@ var MapActions = {
     AppDispatcher.dispatch({
       actionType: "NEW_MAP"
     });
+  },
+  createConnections: function(){
+    AppDispatcher.dispatch({
+      actionType: "CREATE_CONNECTIONS"
+    });
   }
 };
 

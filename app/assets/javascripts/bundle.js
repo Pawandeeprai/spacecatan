@@ -32247,6 +32247,7 @@
 	var TileStore = new Store(AppDispatcher);
 
 	var _tiles = [];
+	var rollTiles = {};
 	// create a tile object
 	function Tile(type, diceValue) {
 	  //TODO add the vertex array for connections
@@ -32254,6 +32255,10 @@
 	  this.conections = [];
 	  this.diceValue = diceValue;
 	}
+
+	Tile.prototype.sendResource = function () {
+	  console.log(this.conections);
+	};
 
 	var generateNewMap = function () {
 	  var types = ["plasma", "plasma", "plasma", "plat", "plat", "plat", "plat", "oxy", "oxy", "oxy", "oxy", "water", "water", "water", "water", "food", "food", "food", "food"];
@@ -32263,7 +32268,7 @@
 	  //  plat (stone)
 	  //  Oxygen (wheat)
 	  //  water (wood)
-	  //  food? (wheat)
+	  //  carbon (wheat)
 	  var i = 0;
 	  while (types.length > 0) {
 	    var random = Math.floor(Math.random() * types.length);
@@ -32272,6 +32277,21 @@
 	    i++;
 	  }
 	  _tiles[9] = new Tile("sun");
+
+	  _tiles.forEach(function (tile) {
+	    if (rollTiles[tile.diceValue]) {
+	      rollTiles[tile.diceValue].push(tile);
+	    } else {
+	      rollTiles[tile.diceValue] = [tile];
+	    }
+	  });
+	  console.log(rollTiles);
+	};
+
+	var sendResource = function (dieRoll) {
+	  rollTiles[dieRoll].forEach(function (tile) {
+	    tile.sendResource();
+	  });
 	};
 
 	TileStore.all = function () {
@@ -32284,7 +32304,10 @@
 	      generateNewMap();
 	      TileStore.__emitChange();
 	      break;
-
+	    case "DICE_ROLL":
+	      sendResource(payload.dieRoll);
+	      TileStore.__emitChange();
+	      break;
 	  }
 	};
 	module.exports = TileStore;
@@ -32720,6 +32743,11 @@
 	    AppDispatcher.dispatch({
 	      actionType: "NEW_MAP"
 	    });
+	  },
+	  createConnections: function () {
+	    AppDispatcher.dispatch({
+	      actionType: "CREATE_CONNECTIONS"
+	    });
 	  }
 	};
 
@@ -32779,6 +32807,7 @@
 	    RoadActions.generateNewRoads();
 	    MapActions.generateNewMap(); //maybe this shouldn't automatically generate the tiles?
 	    PlayerActions.generateNewPlayers(players);
+	    MapActions.createConnections();
 	    this.history.push("/map");
 	  },
 	  render: function () {

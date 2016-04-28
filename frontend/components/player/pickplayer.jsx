@@ -49,6 +49,7 @@ module.exports = React.createClass({
     RoadActions.generateNewRoads();
     MapActions.generateNewMap(); //maybe this shouldn't automatically generate the tiles?
     PlayerActions.generateNewPlayers(players);
+    MapActions.createConnections();
     this.history.push("/map");
   },
   render: function () {
