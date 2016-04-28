@@ -4,6 +4,7 @@ var PlayerActions = require('../../actions/player.js');
 var TileActions = require('../../actions/tile.js');
 
 var BuildBase = require('./buildbase.jsx');
+var BuildRoad = require('./buildroad.jsx');
 
 
 module.exports = React.createClass({
@@ -34,12 +35,7 @@ module.exports = React.createClass({
     if (this.state.rolled){
       return(
         <div className="end-turn">
-
-          <input
-            type="submit"
-            value="Build Road"
-            onClick={this.rotatePlayers}
-            className="button"></input>
+          <BuildRoad/>
           <BuildBase/>
           <input
             type="submit"

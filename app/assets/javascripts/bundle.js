@@ -32417,6 +32417,7 @@
 	var TileActions = __webpack_require__(258);
 
 	var BuildBase = __webpack_require__(259);
+	var BuildRoad = __webpack_require__(270);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32449,11 +32450,7 @@
 	      return React.createElement(
 	        'div',
 	        { className: 'end-turn' },
-	        React.createElement('input', {
-	          type: 'submit',
-	          value: 'Build Road',
-	          onClick: this.rotatePlayers,
-	          className: 'button' }),
+	        React.createElement(BuildRoad, null),
 	        React.createElement(BuildBase, null),
 	        React.createElement('input', {
 	          type: 'submit',
@@ -33199,6 +33196,56 @@
 	};
 
 	module.exports = RoadActions;
+
+/***/ },
+/* 270 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var PlayerStore = __webpack_require__(255);
+
+	module.exports = React.createClass({
+	  displayName: 'exports',
+
+	  getInitialState: function () {
+	    var currentPlayer = PlayerStore.currentPlayer();
+	    return { currentPlayer: currentPlayer };
+	  },
+	  componentWillMount: function () {
+	    this.listener = PlayerStore.addListener(this._onChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	  _onChange: function () {
+	    this.setState({
+	      currentPlayer: PlayerStore.currentPlayer()
+	    });
+	  },
+	  checkForResources: function () {
+	    if (this.state.currentPlayer.resources.plasma < 1) {
+	      return false;
+	    }
+	    if (this.state.currentPlayer.resources.elZero < 1) {
+	      return false;
+	    }
+	    return true;
+	  },
+	  render: function () {
+	    if (this.checkForResources()) {
+	      return React.createElement('input', {
+	        type: 'submit',
+	        value: 'Build Road',
+	        className: 'button' });
+	    } else {
+	      return React.createElement('input', {
+	        type: 'submit',
+	        value: 'Build Road',
+	        className: 'button disable' });
+	    }
+	  }
+	});
 
 /***/ }
 /******/ ]);
