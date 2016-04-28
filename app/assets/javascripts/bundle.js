@@ -25263,7 +25263,6 @@
 	        this.state.height = "low";
 	      }
 	    }
-	    console.log(roadArray[0]);
 	    return [vertArray, roadArray.slice(0, -1)];
 	  },
 	  render: function () {
@@ -25304,7 +25303,6 @@
 	  displayName: "exports",
 
 	  render: function () {
-	    console.log(this.props);
 	    if (this.props.height === "low") {
 	      return React.createElement("div", { className: "road low" });
 	    } else if (this.props.height === "high") {
@@ -32154,7 +32152,6 @@
 	    }
 	    grid.push(row);
 	  }
-	  console.log(grid);
 	  roads_ = grid;
 	};
 
@@ -32394,6 +32391,7 @@
 	var React = __webpack_require__(1);
 
 	var PlayerActions = __webpack_require__(257);
+	var TileActions = __webpack_require__(268);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32403,10 +32401,18 @@
 	      rolled: false
 	    };
 	  },
+
+	  roll: function () {
+	    var dice1 = Math.floor(Math.random() * 5) + 1;
+	    var dice2 = Math.floor(Math.random() * 5) + 1;
+	    TileActions.roll(dice1 + dice2);
+	  },
+
 	  rotatePlayers: function (e) {
 	    e.preventDefault();
 	    PlayerActions.rotatePlayers();
 	  },
+
 	  render: function () {
 	    return React.createElement(
 	      'div',
@@ -32414,7 +32420,7 @@
 	      React.createElement('input', {
 	        type: 'submit',
 	        value: 'Roll',
-	        onClick: this.rotatePlayers,
+	        onClick: this.roll,
 	        className: 'button' }),
 	      React.createElement('input', {
 	        type: 'submit',
@@ -33080,6 +33086,23 @@
 	};
 
 	module.exports = RoadActions;
+
+/***/ },
+/* 268 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var AppDispatcher = __webpack_require__(247);
+
+	var TileActions = {
+	  roll: function (dieRoll) {
+	    AppDispatcher.dispatch({
+	      actionType: "DICE_ROLL",
+	      dieRoll: dieRoll
+	    });
+	  }
+	};
+
+	module.exports = TileActions;
 
 /***/ }
 /******/ ]);

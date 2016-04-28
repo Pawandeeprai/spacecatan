@@ -30,7 +30,6 @@ module.exports = React.createClass({
         this.state.height = "low";
       }
     }
-    console.log(roadArray[0]);
     return [vertArray, roadArray.slice(0, -1)];
   },
   render: function () {
