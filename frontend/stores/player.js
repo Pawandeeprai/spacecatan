@@ -5,15 +5,17 @@ var PlayerStore = new Store(AppDispatcher);
 
 var players_ = [];
 
+
+
 function Player(name, color){
   this.name = name;
   this.color = color;
   this.resources = {
-    wood: 0,
-    brick: 0,
-    sheep: 0,
-    wheat: 0,
-    stone: 0
+    elZero: 0,
+    plasma: 0,
+    oxygen: 0,
+    hydrogen: 0,
+    carbon: 0
   };
 }
 

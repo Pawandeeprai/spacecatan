@@ -156,3 +156,8 @@ padding: 5px;
 .blank{
   color: black;
 }
+
+.disable {
+  background-color: lightgrey;
+  color: grey;
+}

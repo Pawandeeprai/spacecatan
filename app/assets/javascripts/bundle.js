@@ -53,7 +53,7 @@
 	var IndexRoute = __webpack_require__(166).IndexRoute;
 
 	var App = __webpack_require__(223);
-	var MapActions = __webpack_require__(260);
+	var MapActions = __webpack_require__(262);
 
 	var TileStore = __webpack_require__(253);
 
@@ -25169,8 +25169,8 @@
 
 	var React = __webpack_require__(1);
 	var CatanMap = __webpack_require__(224);
-	var MapActions = __webpack_require__(260);
-	var PickPlayer = __webpack_require__(261);
+	var MapActions = __webpack_require__(262);
+	var PickPlayer = __webpack_require__(263);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -25194,8 +25194,8 @@
 
 	var CurrentPlayer = __webpack_require__(254);
 	var GameButtons = __webpack_require__(256);
-	var ResourceTab = __webpack_require__(258);
-	var BuildingCards = __webpack_require__(259);
+	var ResourceTab = __webpack_require__(260);
+	var BuildingCards = __webpack_require__(261);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32365,11 +32365,11 @@
 	  this.name = name;
 	  this.color = color;
 	  this.resources = {
-	    wood: 0,
-	    brick: 0,
-	    sheep: 0,
-	    wheat: 0,
-	    stone: 0
+	    elZero: 0,
+	    plasma: 0,
+	    oxygen: 0,
+	    hydrogen: 0,
+	    carbon: 0
 	  };
 	}
 
@@ -32414,7 +32414,9 @@
 	var React = __webpack_require__(1);
 
 	var PlayerActions = __webpack_require__(257);
-	var TileActions = __webpack_require__(268);
+	var TileActions = __webpack_require__(258);
+
+	var BuildBase = __webpack_require__(259);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32437,6 +32439,9 @@
 	  rotatePlayers: function (e) {
 	    e.preventDefault();
 	    PlayerActions.rotatePlayers();
+	    this.setState({
+	      rolled: false
+	    });
 	  },
 
 	  render: function () {
@@ -32449,11 +32454,7 @@
 	          value: 'Build Road',
 	          onClick: this.rotatePlayers,
 	          className: 'button' }),
-	        React.createElement('input', {
-	          type: 'submit',
-	          value: 'Build Base',
-	          onClick: this.rotatePlayers,
-	          className: 'button' }),
+	        React.createElement(BuildBase, null),
 	        React.createElement('input', {
 	          type: 'submit',
 	          value: 'End Turn',
@@ -32500,6 +32501,79 @@
 /* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var AppDispatcher = __webpack_require__(247);
+
+	var TileActions = {
+	  roll: function (dieRoll) {
+	    AppDispatcher.dispatch({
+	      actionType: "DICE_ROLL",
+	      dieRoll: dieRoll
+	    });
+	  }
+	};
+
+	module.exports = TileActions;
+
+/***/ },
+/* 259 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var PlayerStore = __webpack_require__(255);
+
+	module.exports = React.createClass({
+	  displayName: 'exports',
+
+	  getInitialState: function () {
+	    var currentPlayer = PlayerStore.currentPlayer();
+	    return { currentPlayer: currentPlayer };
+	  },
+	  componentWillMount: function () {
+	    this.listener = PlayerStore.addListener(this._onChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	  _onChange: function () {
+	    this.setState({
+	      currentPlayer: PlayerStore.currentPlayer()
+	    });
+	  },
+	  checkForResources: function () {
+	    if (this.state.currentPlayer.resources.plasma < 1) {
+	      return false;
+	    }
+	    if (this.state.currentPlayer.resources.elZero < 1) {
+	      return false;
+	    }
+	    if (this.state.currentPlayer.resources.oxygen < 1) {
+	      return false;
+	    }
+	    if (this.state.currentPlayer.resources.hydrogen < 1) {
+	      return false;
+	    }
+	    return true;
+	  },
+	  render: function () {
+	    if (this.checkForResources()) {
+	      return React.createElement('input', {
+	        type: 'submit',
+	        value: 'Build Base',
+	        className: 'button' });
+	    } else {
+	      return React.createElement('input', {
+	        type: 'submit',
+	        value: 'Build Base',
+	        className: 'button disable' });
+	    }
+	  }
+	});
+
+/***/ },
+/* 260 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var React = __webpack_require__(1);
 
 	var PlayerStore = __webpack_require__(255);
@@ -32538,42 +32612,42 @@
 	        null,
 	        React.createElement('div', { className: 'resource-color plasma' }),
 	        'Plasma: ',
-	        this.state.resources.wood
+	        this.state.resources.plasma
 	      ),
 	      React.createElement(
 	        'h3',
 	        null,
 	        React.createElement('div', { className: 'resource-color zero' }),
 	        'Element Zero: ',
-	        this.state.resources.brick
+	        this.state.resources.elZero
 	      ),
 	      React.createElement(
 	        'h3',
 	        null,
 	        React.createElement('div', { className: 'resource-color oxygen' }),
 	        'Oxygen: ',
-	        this.state.resources.sheep
+	        this.state.resources.oxygen
 	      ),
 	      React.createElement(
 	        'h3',
 	        null,
 	        React.createElement('div', { className: 'resource-color hydrogen' }),
 	        'Hydrogen: ',
-	        this.state.resources.wheat
+	        this.state.resources.hydrogen
 	      ),
 	      React.createElement(
 	        'h3',
 	        null,
 	        React.createElement('div', { className: 'resource-color carbon' }),
 	        'Carbon: ',
-	        this.state.resources.stone
+	        this.state.resources.carbon
 	      )
 	    );
 	  }
 	});
 
 /***/ },
-/* 259 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -32743,7 +32817,7 @@
 	});
 
 /***/ },
-/* 260 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(247);
@@ -32764,19 +32838,19 @@
 	module.exports = MapActions;
 
 /***/ },
-/* 261 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LinkedStateMixin = __webpack_require__(262);
+	var LinkedStateMixin = __webpack_require__(264);
 	var Link = __webpack_require__(166).Link;
 	var History = __webpack_require__(166).History;
 
-	var MapActions = __webpack_require__(260);
+	var MapActions = __webpack_require__(262);
 	var PlayerStore = __webpack_require__(255);
 	var PlayerActions = __webpack_require__(257);
-	var VertexActions = __webpack_require__(266);
-	var RoadActions = __webpack_require__(267);
+	var VertexActions = __webpack_require__(268);
+	var RoadActions = __webpack_require__(269);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32867,13 +32941,13 @@
 	});
 
 /***/ },
-/* 262 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(263);
+	module.exports = __webpack_require__(265);
 
 /***/ },
-/* 263 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32889,8 +32963,8 @@
 
 	'use strict';
 
-	var ReactLink = __webpack_require__(264);
-	var ReactStateSetters = __webpack_require__(265);
+	var ReactLink = __webpack_require__(266);
+	var ReactStateSetters = __webpack_require__(267);
 
 	/**
 	 * A simple mixin around ReactLink.forState().
@@ -32913,7 +32987,7 @@
 	module.exports = LinkedStateMixin;
 
 /***/ },
-/* 264 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32986,7 +33060,7 @@
 	module.exports = ReactLink;
 
 /***/ },
-/* 265 */
+/* 267 */
 /***/ function(module, exports) {
 
 	/**
@@ -33095,7 +33169,7 @@
 	module.exports = ReactStateSetters;
 
 /***/ },
-/* 266 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(247);
@@ -33111,7 +33185,7 @@
 	module.exports = VertexActions;
 
 /***/ },
-/* 267 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(247);
@@ -33125,23 +33199,6 @@
 	};
 
 	module.exports = RoadActions;
-
-/***/ },
-/* 268 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var AppDispatcher = __webpack_require__(247);
-
-	var TileActions = {
-	  roll: function (dieRoll) {
-	    AppDispatcher.dispatch({
-	      actionType: "DICE_ROLL",
-	      dieRoll: dieRoll
-	    });
-	  }
-	};
-
-	module.exports = TileActions;
 
 /***/ }
 /******/ ]);

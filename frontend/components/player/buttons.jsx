@@ -3,6 +3,8 @@ var React = require('react');
 var PlayerActions = require('../../actions/player.js');
 var TileActions = require('../../actions/tile.js');
 
+var BuildBase = require('./buildbase.jsx');
+
 
 module.exports = React.createClass({
   getInitialState: function(){
@@ -23,6 +25,9 @@ module.exports = React.createClass({
   rotatePlayers: function(e){
     e.preventDefault();
     PlayerActions.rotatePlayers();
+    this.setState({
+      rolled: false
+    });
   },
 
   render: function () {
@@ -35,11 +40,7 @@ module.exports = React.createClass({
             value="Build Road"
             onClick={this.rotatePlayers}
             className="button"></input>
-          <input
-            type="submit"
-            value="Build Base"
-            onClick={this.rotatePlayers}
-            className="button"></input>
+          <BuildBase/>
           <input
             type="submit"
             value="End Turn"
