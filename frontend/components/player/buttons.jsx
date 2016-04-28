@@ -15,37 +15,48 @@ module.exports = React.createClass({
     var dice1 = Math.floor(Math.random() * 5) + 1;
     var dice2 = Math.floor(Math.random() * 5) + 1;
     TileActions.roll(dice1 + dice2);
+    this.setState({
+      rolled: true
+    });
   },
 
   rotatePlayers: function(e){
     e.preventDefault();
     PlayerActions.rotatePlayers();
   },
-  
+
   render: function () {
-    return(
+    if (this.state.rolled){
+      return(
+        <div className="end-turn">
+
+          <input
+            type="submit"
+            value="Build Road"
+            onClick={this.rotatePlayers}
+            className="button"></input>
+          <input
+            type="submit"
+            value="Build Base"
+            onClick={this.rotatePlayers}
+            className="button"></input>
+          <input
+            type="submit"
+            value="End Turn"
+            onClick={this.rotatePlayers}
+            className="button"></input>
+        </div>
+      );
+    } else {
+      return (
       <div className="end-turn">
         <input
           type="submit"
           value="Roll"
           onClick={this.roll}
           className="button"></input>
-          <input
-            type="submit"
-            value="Build Road"
-            onClick={this.rotatePlayers}
-            className="button"></input>
-            <input
-              type="submit"
-              value="Build Base"
-              onClick={this.rotatePlayers}
-              className="button"></input>
-        <input
-          type="submit"
-          value="End Turn"
-          onClick={this.rotatePlayers}
-          className="button"></input>
       </div>
     );
+    }
   }
 });
