@@ -32365,11 +32365,11 @@
 	  this.name = name;
 	  this.color = color;
 	  this.resources = {
-	    elZero: 0,
-	    plasma: 0,
-	    oxygen: 0,
-	    hydrogen: 0,
-	    carbon: 0
+	    elZero: 10,
+	    plasma: 10,
+	    oxygen: 10,
+	    hydrogen: 10,
+	    carbon: 10
 	  };
 	}
 
@@ -32418,6 +32418,7 @@
 
 	var BuildBase = __webpack_require__(259);
 	var BuildRoad = __webpack_require__(270);
+	var BuildCard = __webpack_require__(271);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32452,6 +32453,7 @@
 	        { className: 'end-turn' },
 	        React.createElement(BuildRoad, null),
 	        React.createElement(BuildBase, null),
+	        React.createElement(BuildCard, null),
 	        React.createElement('input', {
 	          type: 'submit',
 	          value: 'End Turn',
@@ -33242,6 +33244,59 @@
 	      return React.createElement('input', {
 	        type: 'submit',
 	        value: 'Build Road',
+	        className: 'button disable' });
+	    }
+	  }
+	});
+
+/***/ },
+/* 271 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var PlayerStore = __webpack_require__(255);
+
+	module.exports = React.createClass({
+	  displayName: 'exports',
+
+	  getInitialState: function () {
+	    var currentPlayer = PlayerStore.currentPlayer();
+	    return { currentPlayer: currentPlayer };
+	  },
+	  componentWillMount: function () {
+	    this.listener = PlayerStore.addListener(this._onChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	  _onChange: function () {
+	    this.setState({
+	      currentPlayer: PlayerStore.currentPlayer()
+	    });
+	  },
+	  checkForResources: function () {
+	    if (this.state.currentPlayer.resources.hydrogen < 1) {
+	      return false;
+	    }
+	    if (this.state.currentPlayer.resources.oxygen < 1) {
+	      return false;
+	    }
+	    if (this.state.currentPlayer.resources.carbon < 1) {
+	      return false;
+	    }
+	    return true;
+	  },
+	  render: function () {
+	    if (this.checkForResources()) {
+	      return React.createElement('input', {
+	        type: 'submit',
+	        value: 'Buy Card',
+	        className: 'button' });
+	    } else {
+	      return React.createElement('input', {
+	        type: 'submit',
+	        value: 'Buy Card',
 	        className: 'button disable' });
 	    }
 	  }

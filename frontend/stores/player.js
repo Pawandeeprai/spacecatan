@@ -11,11 +11,11 @@ function Player(name, color){
   this.name = name;
   this.color = color;
   this.resources = {
-    elZero: 0,
-    plasma: 0,
-    oxygen: 0,
-    hydrogen: 0,
-    carbon: 0
+    elZero: 10,
+    plasma: 10,
+    oxygen: 10,
+    hydrogen: 10,
+    carbon: 10
   };
 }
 

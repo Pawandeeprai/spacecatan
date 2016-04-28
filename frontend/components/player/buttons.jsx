@@ -5,6 +5,7 @@ var TileActions = require('../../actions/tile.js');
 
 var BuildBase = require('./buildbase.jsx');
 var BuildRoad = require('./buildroad.jsx');
+var BuildCard = require('./buildcard.jsx');
 
 
 module.exports = React.createClass({
@@ -37,6 +38,7 @@ module.exports = React.createClass({
         <div className="end-turn">
           <BuildRoad/>
           <BuildBase/>
+          <BuildCard/>
           <input
             type="submit"
             value="End Turn"
