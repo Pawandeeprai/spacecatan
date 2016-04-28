@@ -32542,119 +32542,164 @@
 	module.exports = React.createClass({
 	  displayName: "exports",
 
+	  getInitialState: function () {
+	    return {
+	      clicked: false
+	    };
+	  },
+	  clicked: function () {
+	    if (this.state.clicked) {
+	      this.setState({ clicked: false });
+	    } else {
+	      this.setState({ clicked: true });
+	    }
+	  },
 	  render: function () {
-
-	    return React.createElement(
-	      "div",
-	      { className: "build-tab" },
-	      React.createElement(
+	    if (this.state.clicked) {
+	      return React.createElement(
 	        "div",
-	        { className: "building-tab", id: "road" },
+	        { className: "build-tab" },
 	        React.createElement(
-	          "h2",
-	          null,
-	          "Road"
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color plasma" }),
-	          "Plasma: 1"
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color zero" }),
-	          "El Zero: 1"
-	        )
-	      ),
-	      React.createElement(
-	        "div",
-	        { className: "building-tab", id: "base" },
-	        React.createElement(
-	          "h2",
-	          null,
-	          "Base"
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color plasma" }),
-	          "Plasma: 1"
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color zero" }),
-	          "El Zero: 1"
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color oxygen" }),
-	          "Oxygen: 1"
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color hydrogen" }),
-	          "Hydrogen: 1"
-	        )
-	      ),
-	      React.createElement(
-	        "div",
-	        { className: "building-tab", id: "city" },
-	        React.createElement(
-	          "h2",
-	          null,
-	          "City"
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color hydrogen" }),
-	          "Hydrogen: 2"
-	        ),
-	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color carbon" }),
-	          "Carbon: 3"
-	        )
-	      ),
-	      React.createElement(
-	        "div",
-	        { className: "building-tab", id: "devcard" },
-	        React.createElement(
-	          "h2",
-	          null,
-	          "Card ",
+	          "div",
+	          { className: "building-tab", id: "road" },
 	          React.createElement(
-	            "span",
-	            { className: "close-tab" },
-	            "X"
+	            "h2",
+	            null,
+	            "Road"
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color plasma" }),
+	            "Plasma: 1"
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color zero" }),
+	            "El Zero: 1"
+	          ),
+	          React.createElement(
+	            "h3",
+	            { className: "blank" },
+	            React.createElement("div", { className: "resource-color" }),
+	            "c"
+	          ),
+	          React.createElement(
+	            "h3",
+	            { className: "blank" },
+	            React.createElement("div", { className: "resource-color" }),
+	            "c"
 	          )
 	        ),
 	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color hydrogen" }),
-	          "Hydrogen: 1"
+	          "div",
+	          { className: "building-tab", id: "base" },
+	          React.createElement(
+	            "h2",
+	            null,
+	            "Base"
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color plasma" }),
+	            "Plasma: 1"
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color zero" }),
+	            "El Zero: 1"
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color oxygen" }),
+	            "Oxygen: 1"
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color hydrogen" }),
+	            "Hydrogen: 1"
+	          )
 	        ),
 	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color oxygen" }),
-	          "Oxygen: 1"
+	          "div",
+	          { className: "building-tab", id: "city" },
+	          React.createElement(
+	            "h2",
+	            null,
+	            "City"
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color hydrogen" }),
+	            "Hydrogen: 2"
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color carbon" }),
+	            "Carbon: 3"
+	          ),
+	          React.createElement(
+	            "h3",
+	            { className: "blank" },
+	            React.createElement("div", { className: "resource-color" }),
+	            "c"
+	          ),
+	          React.createElement(
+	            "h3",
+	            { className: "blank" },
+	            React.createElement("div", { className: "resource-color" }),
+	            "c"
+	          )
 	        ),
 	        React.createElement(
-	          "h3",
-	          null,
-	          React.createElement("div", { className: "resource-color carbon" }),
-	          "Carbon: 1"
+	          "div",
+	          { className: "building-tab", id: "devcard" },
+	          React.createElement(
+	            "h2",
+	            null,
+	            "Card ",
+	            React.createElement(
+	              "span",
+	              { onClick: this.clicked, className: "close-tab" },
+	              "X"
+	            )
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color hydrogen" }),
+	            "Hydrogen: 1"
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color oxygen" }),
+	            "Oxygen: 1"
+	          ),
+	          React.createElement(
+	            "h3",
+	            null,
+	            React.createElement("div", { className: "resource-color carbon" }),
+	            "Carbon: 1"
+	          ),
+	          React.createElement(
+	            "h3",
+	            { className: "blank" },
+	            React.createElement("div", { className: "resource-color" }),
+	            "c"
+	          )
 	        )
-	      )
-	    );
+	      );
+	    } else {
+	      return React.createElement("input", { onClick: this.clicked, className: "button open-building-tab", value: "^^    Open Building Tab    ^^" });
+	    }
 	  }
 	});
 
