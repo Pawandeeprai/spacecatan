@@ -3,17 +3,20 @@ var AppDispatcher = require('../dispatcher/dispatcher.js');
 
 var TileStore = new Store(AppDispatcher);
 
+var VertexStore = require('./vertex.js');
+
+
 var _tiles = [];
 var rollTiles = {};
 // create a tile object
 function Tile(type, diceValue){ //TODO add the vertex array for connections
   this.type = type;
-  this.conections = [];
+  this.connections = [];
   this.diceValue = diceValue;
 }
 
 Tile.prototype.sendResource = function () {
-  console.log(this.conections);
+
 };
 
 var generateNewMap = function(){
@@ -45,7 +48,53 @@ var generateNewMap = function(){
       rollTiles[tile.diceValue] = [tile];
     }
   });
-  console.log(rollTiles);
+};
+
+var generateConnections = function(){
+  var allVert = VertexStore.all();
+  var row1 = _tiles.slice(0,3);
+  var row2 = _tiles.slice(3,7);
+  var row3 = _tiles.slice(7,12);
+  var row4 = _tiles.slice(12,16);
+  var row5 = _tiles.slice(16,19);
+
+  // build connections for row 1
+  var i = 0;
+  row1.forEach(function(tile){
+    for (var j = i; j < i + 3; j ++){
+      tile.connections.push([0,j]);
+      tile.connections.push([1,j + 1]);
+    }
+    i += 2 ;
+  });
+  row2.forEach(function(tile){
+    for (var j = i; j < i + 3; j ++){
+      tile.connections.push([1,j]);
+      tile.connections.push([2,j + 1]);
+    }
+    i += 2 ;
+  });
+  row3.forEach(function(tile){
+    for (var j = i; j < i + 3; j ++){
+      tile.connections.push([2,j]);
+      tile.connections.push([3,j + 1]);
+    }
+    i += 2 ;
+  });
+  row4.forEach(function(tile){
+    for (var j = i; j < i + 3; j ++){
+      tile.connections.push([3,j]);
+      tile.connections.push([4,j + 1]);
+    }
+    i += 2 ;
+  });
+  row5.forEach(function(tile){
+    for (var j = i; j < i + 3; j ++){
+      tile.connections.push([4,j]);
+      tile.connections.push([5,j + 1]);
+    }
+    i += 2 ;
+  });
 };
 
 var sendResource = function(dieRoll){
@@ -66,6 +115,10 @@ TileStore.__onDispatch = function(payload){
       break;
     case "DICE_ROLL":
       sendResource(payload.dieRoll);
+      TileStore.__emitChange();
+      break;
+    case "GENERATE_CONNECTIONS":
+      generateConnections();
       TileStore.__emitChange();
       break;
   }

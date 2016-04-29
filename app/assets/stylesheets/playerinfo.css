@@ -23,16 +23,17 @@
 
 .resource-tab {
   border: 1px solid white;
-  width: 250px;
+  width: 225px;
   position: fixed;
   bottom: 10px;
   left: 10px;
   background-color: black;
-  height: 229px;
+  height: 220px;
+  margin-bottom: 10px;
 }
 
 .resource-tab h3 {
-  font-size: 25px;
+  font-size: 23px;
   margin: 0px;
   margin-bottom: 3px;
   padding: 4px;

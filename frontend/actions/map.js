@@ -6,9 +6,9 @@ var MapActions = {
       actionType: "NEW_MAP"
     });
   },
-  createConnections: function(){
+  generateConnections: function(){
     AppDispatcher.dispatch({
-      actionType: "CREATE_CONNECTIONS"
+      actionType: "GENERATE_CONNECTIONS"
     });
   }
 };

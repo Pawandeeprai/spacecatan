@@ -53,7 +53,7 @@
 	var IndexRoute = __webpack_require__(166).IndexRoute;
 
 	var App = __webpack_require__(223);
-	var MapActions = __webpack_require__(262);
+	var MapActions = __webpack_require__(264);
 
 	var TileStore = __webpack_require__(253);
 
@@ -25169,8 +25169,8 @@
 
 	var React = __webpack_require__(1);
 	var CatanMap = __webpack_require__(224);
-	var MapActions = __webpack_require__(262);
-	var PickPlayer = __webpack_require__(263);
+	var MapActions = __webpack_require__(264);
+	var PickPlayer = __webpack_require__(265);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -25194,8 +25194,8 @@
 
 	var CurrentPlayer = __webpack_require__(254);
 	var GameButtons = __webpack_require__(256);
-	var ResourceTab = __webpack_require__(260);
-	var BuildingCards = __webpack_require__(261);
+	var ResourceTab = __webpack_require__(262);
+	var BuildingCards = __webpack_require__(263);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32246,19 +32246,19 @@
 
 	var TileStore = new Store(AppDispatcher);
 
+	var VertexStore = __webpack_require__(228);
+
 	var _tiles = [];
 	var rollTiles = {};
 	// create a tile object
 	function Tile(type, diceValue) {
 	  //TODO add the vertex array for connections
 	  this.type = type;
-	  this.conections = [];
+	  this.connections = [];
 	  this.diceValue = diceValue;
 	}
 
-	Tile.prototype.sendResource = function () {
-	  console.log(this.conections);
-	};
+	Tile.prototype.sendResource = function () {};
 
 	var generateNewMap = function () {
 	  var types = ["plasma", "plasma", "plasma", "plat", "plat", "plat", "plat", "oxy", "oxy", "oxy", "oxy", "water", "water", "water", "water", "food", "food", "food", "food"];
@@ -32285,7 +32285,53 @@
 	      rollTiles[tile.diceValue] = [tile];
 	    }
 	  });
-	  console.log(rollTiles);
+	};
+
+	var generateConnections = function () {
+	  var allVert = VertexStore.all();
+	  var row1 = _tiles.slice(0, 3);
+	  var row2 = _tiles.slice(3, 7);
+	  var row3 = _tiles.slice(7, 12);
+	  var row4 = _tiles.slice(12, 16);
+	  var row5 = _tiles.slice(16, 19);
+
+	  // build connections for row 1
+	  var i = 0;
+	  row1.forEach(function (tile) {
+	    for (var j = i; j < i + 3; j++) {
+	      tile.connections.push([0, j]);
+	      tile.connections.push([1, j + 1]);
+	    }
+	    i += 2;
+	  });
+	  row2.forEach(function (tile) {
+	    for (var j = i; j < i + 3; j++) {
+	      tile.connections.push([1, j]);
+	      tile.connections.push([2, j + 1]);
+	    }
+	    i += 2;
+	  });
+	  row3.forEach(function (tile) {
+	    for (var j = i; j < i + 3; j++) {
+	      tile.connections.push([2, j]);
+	      tile.connections.push([3, j + 1]);
+	    }
+	    i += 2;
+	  });
+	  row4.forEach(function (tile) {
+	    for (var j = i; j < i + 3; j++) {
+	      tile.connections.push([3, j]);
+	      tile.connections.push([4, j + 1]);
+	    }
+	    i += 2;
+	  });
+	  row5.forEach(function (tile) {
+	    for (var j = i; j < i + 3; j++) {
+	      tile.connections.push([4, j]);
+	      tile.connections.push([5, j + 1]);
+	    }
+	    i += 2;
+	  });
 	};
 
 	var sendResource = function (dieRoll) {
@@ -32306,6 +32352,10 @@
 	      break;
 	    case "DICE_ROLL":
 	      sendResource(payload.dieRoll);
+	      TileStore.__emitChange();
+	      break;
+	    case "GENERATE_CONNECTIONS":
+	      generateConnections();
 	      TileStore.__emitChange();
 	      break;
 	  }
@@ -32365,11 +32415,11 @@
 	  this.name = name;
 	  this.color = color;
 	  this.resources = {
-	    elZero: 10,
-	    plasma: 10,
-	    oxygen: 10,
-	    hydrogen: 10,
-	    carbon: 10
+	    elZero: 0,
+	    plasma: 0,
+	    oxygen: 0,
+	    hydrogen: 0,
+	    carbon: 0
 	  };
 	}
 
@@ -32417,8 +32467,8 @@
 	var TileActions = __webpack_require__(258);
 
 	var BuildBase = __webpack_require__(259);
-	var BuildRoad = __webpack_require__(270);
-	var BuildCard = __webpack_require__(271);
+	var BuildRoad = __webpack_require__(260);
+	var BuildCard = __webpack_require__(261);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32581,6 +32631,109 @@
 	  displayName: 'exports',
 
 	  getInitialState: function () {
+	    var currentPlayer = PlayerStore.currentPlayer();
+	    return { currentPlayer: currentPlayer };
+	  },
+	  componentWillMount: function () {
+	    this.listener = PlayerStore.addListener(this._onChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	  _onChange: function () {
+	    this.setState({
+	      currentPlayer: PlayerStore.currentPlayer()
+	    });
+	  },
+	  checkForResources: function () {
+	    if (this.state.currentPlayer.resources.plasma < 1) {
+	      return false;
+	    }
+	    if (this.state.currentPlayer.resources.elZero < 1) {
+	      return false;
+	    }
+	    return true;
+	  },
+	  render: function () {
+	    if (this.checkForResources()) {
+	      return React.createElement('input', {
+	        type: 'submit',
+	        value: 'Build Road',
+	        className: 'button' });
+	    } else {
+	      return React.createElement('input', {
+	        type: 'submit',
+	        value: 'Build Road',
+	        className: 'button disable' });
+	    }
+	  }
+	});
+
+/***/ },
+/* 261 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var PlayerStore = __webpack_require__(255);
+
+	module.exports = React.createClass({
+	  displayName: 'exports',
+
+	  getInitialState: function () {
+	    var currentPlayer = PlayerStore.currentPlayer();
+	    return { currentPlayer: currentPlayer };
+	  },
+	  componentWillMount: function () {
+	    this.listener = PlayerStore.addListener(this._onChange);
+	  },
+	  componentWillUnmount: function () {
+	    this.listener.remove();
+	  },
+	  _onChange: function () {
+	    this.setState({
+	      currentPlayer: PlayerStore.currentPlayer()
+	    });
+	  },
+	  checkForResources: function () {
+	    if (this.state.currentPlayer.resources.hydrogen < 1) {
+	      return false;
+	    }
+	    if (this.state.currentPlayer.resources.oxygen < 1) {
+	      return false;
+	    }
+	    if (this.state.currentPlayer.resources.carbon < 1) {
+	      return false;
+	    }
+	    return true;
+	  },
+	  render: function () {
+	    if (this.checkForResources()) {
+	      return React.createElement('input', {
+	        type: 'submit',
+	        value: 'Buy Card',
+	        className: 'button' });
+	    } else {
+	      return React.createElement('input', {
+	        type: 'submit',
+	        value: 'Buy Card',
+	        className: 'button disable' });
+	    }
+	  }
+	});
+
+/***/ },
+/* 262 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var React = __webpack_require__(1);
+
+	var PlayerStore = __webpack_require__(255);
+
+	module.exports = React.createClass({
+	  displayName: 'exports',
+
+	  getInitialState: function () {
 	    return {
 	      resources: PlayerStore.currentPlayer().resources
 	    };
@@ -32646,7 +32799,7 @@
 	});
 
 /***/ },
-/* 261 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
@@ -32816,7 +32969,7 @@
 	});
 
 /***/ },
-/* 262 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(247);
@@ -32827,9 +32980,9 @@
 	      actionType: "NEW_MAP"
 	    });
 	  },
-	  createConnections: function () {
+	  generateConnections: function () {
 	    AppDispatcher.dispatch({
-	      actionType: "CREATE_CONNECTIONS"
+	      actionType: "GENERATE_CONNECTIONS"
 	    });
 	  }
 	};
@@ -32837,19 +32990,19 @@
 	module.exports = MapActions;
 
 /***/ },
-/* 263 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var React = __webpack_require__(1);
-	var LinkedStateMixin = __webpack_require__(264);
+	var LinkedStateMixin = __webpack_require__(266);
 	var Link = __webpack_require__(166).Link;
 	var History = __webpack_require__(166).History;
 
-	var MapActions = __webpack_require__(262);
+	var MapActions = __webpack_require__(264);
 	var PlayerStore = __webpack_require__(255);
 	var PlayerActions = __webpack_require__(257);
-	var VertexActions = __webpack_require__(268);
-	var RoadActions = __webpack_require__(269);
+	var VertexActions = __webpack_require__(270);
+	var RoadActions = __webpack_require__(271);
 
 	module.exports = React.createClass({
 	  displayName: 'exports',
@@ -32890,7 +33043,7 @@
 	    RoadActions.generateNewRoads();
 	    MapActions.generateNewMap(); //maybe this shouldn't automatically generate the tiles?
 	    PlayerActions.generateNewPlayers(players);
-	    MapActions.createConnections();
+	    MapActions.generateConnections();
 	    this.history.push("/map");
 	  },
 	  render: function () {
@@ -32940,13 +33093,13 @@
 	});
 
 /***/ },
-/* 264 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(265);
+	module.exports = __webpack_require__(267);
 
 /***/ },
-/* 265 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -32962,8 +33115,8 @@
 
 	'use strict';
 
-	var ReactLink = __webpack_require__(266);
-	var ReactStateSetters = __webpack_require__(267);
+	var ReactLink = __webpack_require__(268);
+	var ReactStateSetters = __webpack_require__(269);
 
 	/**
 	 * A simple mixin around ReactLink.forState().
@@ -32986,7 +33139,7 @@
 	module.exports = LinkedStateMixin;
 
 /***/ },
-/* 266 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -33059,7 +33212,7 @@
 	module.exports = ReactLink;
 
 /***/ },
-/* 267 */
+/* 269 */
 /***/ function(module, exports) {
 
 	/**
@@ -33168,7 +33321,7 @@
 	module.exports = ReactStateSetters;
 
 /***/ },
-/* 268 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(247);
@@ -33184,7 +33337,7 @@
 	module.exports = VertexActions;
 
 /***/ },
-/* 269 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var AppDispatcher = __webpack_require__(247);
@@ -33198,109 +33351,6 @@
 	};
 
 	module.exports = RoadActions;
-
-/***/ },
-/* 270 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-
-	var PlayerStore = __webpack_require__(255);
-
-	module.exports = React.createClass({
-	  displayName: 'exports',
-
-	  getInitialState: function () {
-	    var currentPlayer = PlayerStore.currentPlayer();
-	    return { currentPlayer: currentPlayer };
-	  },
-	  componentWillMount: function () {
-	    this.listener = PlayerStore.addListener(this._onChange);
-	  },
-	  componentWillUnmount: function () {
-	    this.listener.remove();
-	  },
-	  _onChange: function () {
-	    this.setState({
-	      currentPlayer: PlayerStore.currentPlayer()
-	    });
-	  },
-	  checkForResources: function () {
-	    if (this.state.currentPlayer.resources.plasma < 1) {
-	      return false;
-	    }
-	    if (this.state.currentPlayer.resources.elZero < 1) {
-	      return false;
-	    }
-	    return true;
-	  },
-	  render: function () {
-	    if (this.checkForResources()) {
-	      return React.createElement('input', {
-	        type: 'submit',
-	        value: 'Build Road',
-	        className: 'button' });
-	    } else {
-	      return React.createElement('input', {
-	        type: 'submit',
-	        value: 'Build Road',
-	        className: 'button disable' });
-	    }
-	  }
-	});
-
-/***/ },
-/* 271 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var React = __webpack_require__(1);
-
-	var PlayerStore = __webpack_require__(255);
-
-	module.exports = React.createClass({
-	  displayName: 'exports',
-
-	  getInitialState: function () {
-	    var currentPlayer = PlayerStore.currentPlayer();
-	    return { currentPlayer: currentPlayer };
-	  },
-	  componentWillMount: function () {
-	    this.listener = PlayerStore.addListener(this._onChange);
-	  },
-	  componentWillUnmount: function () {
-	    this.listener.remove();
-	  },
-	  _onChange: function () {
-	    this.setState({
-	      currentPlayer: PlayerStore.currentPlayer()
-	    });
-	  },
-	  checkForResources: function () {
-	    if (this.state.currentPlayer.resources.hydrogen < 1) {
-	      return false;
-	    }
-	    if (this.state.currentPlayer.resources.oxygen < 1) {
-	      return false;
-	    }
-	    if (this.state.currentPlayer.resources.carbon < 1) {
-	      return false;
-	    }
-	    return true;
-	  },
-	  render: function () {
-	    if (this.checkForResources()) {
-	      return React.createElement('input', {
-	        type: 'submit',
-	        value: 'Buy Card',
-	        className: 'button' });
-	    } else {
-	      return React.createElement('input', {
-	        type: 'submit',
-	        value: 'Buy Card',
-	        className: 'button disable' });
-	    }
-	  }
-	});
 
 /***/ }
 /******/ ]);
