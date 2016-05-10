@@ -12,6 +12,8 @@ module.exports = React.createClass({
     } else {
       this.setState({clicked: true});
     }
+
+    
   },
   render: function () {
     if (this.state.clicked){
